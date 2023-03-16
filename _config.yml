@@ -1,0 +1,22 @@
+title:       Georgi Mitrev
+email:       gvmitrev@gmail.com
+author:      Georgi Mitrev
+description: "Personal blog of Georgi Mitrev"
+baseurl:     ""
+url:         "https://mitrev.net"
+date_format: "%b %-d, %Y"
+permalink:    pretty
+
+plugins:
+  - jekyll-postcss
+
+postcss:
+  cache: false
+
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+
+exclude:
+  - Gemfile
