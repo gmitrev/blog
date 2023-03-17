@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Rails migration generator - how to specify decimal precision and scale - Georgi Mitrev</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+  </head>
+  <body class="bg-cream mx-8 lg:mx-auto lg:w-full lg:max-w-2xl flex flex-col h-screen">
+    <header class="mt-6 my-12 flex">
+  <div class="flex-grow">
+    <a href="/" class="w-8 inline-block">/</a>
+  </div>
+
+  <div class="flex space-x-10">
+    <a href="/projects">/projects</a>
+    <a href="/about">/about</a>
+  </div>
+</header>
+
+
+    <main class="grow">
+      <!-- <div class='banner'> -->
+<!--   Check out my newest project for tracking portfolio performance, -->
+<!--   <a target='_blank' href='https://stonksfolio.com'>Stonksfolio</a>. -->
+<!-- </div> -->
+
+<div class="my-8 text-center">
+  <h1>Rails migration generator - how to specify decimal precision and scale</h1>
+
+  <span class="font-monospace text-xs text-slate-400">Apr 19, 2015</span>
+</div>
+
+<article class="mt-6 grow">
+  <p>This is a simple thing to forget and this is why it deserves its own post!</p>
+
+<p>The standard way to do it is:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rails g migration add_amount_to_records amount:decimal<span class="o">{</span>5,2<span class="o">}</span>
+</code></pre></div></div>
+
+<p>But this does not work if you are using <code class="language-plaintext highlighter-rouge">zsh</code> and instead we get the following migration:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AddAmountToRecords</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">5.2</span><span class="p">]</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">add_column</span> <span class="ss">:records</span><span class="p">,</span> <span class="ss">:amount</span><span class="p">,</span> <span class="ss">:decimal5</span>
+    <span class="n">add_column</span> <span class="ss">:records</span><span class="p">,</span> <span class="ss">:amount</span><span class="p">,</span> <span class="ss">:decimal2</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>We obviously didn’t want this. In order to get what we wanted, we can replace the comma with a
+hyphen:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rails g migration add_amount_to_records amount:decimal<span class="o">{</span>5-2<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Or simply quote the column declaration:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rails g migration add_amount_to_records <span class="s1">'amount:decimal{5,2}'</span>
+</code></pre></div></div>
+
+<p>Both commands result in the following migration:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AddAmountToRecords</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">5.2</span><span class="p">]</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">add_column</span> <span class="ss">:records</span><span class="p">,</span> <span class="ss">:amount</span><span class="p">,</span> <span class="ss">:decimal</span><span class="p">,</span> <span class="ss">precision: </span><span class="mi">5</span><span class="p">,</span> <span class="ss">scale: </span><span class="mi">2</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Bingo!</p>
+
+<div class="border border-pink-200 p-4 pt-2 bg-rose-50 rounded text-sm">
+  <div class="text-pink-300  text-center mb-2" style="font-size: 8px">
+    <span class="text-rose-500 font-bold">[</span>
+    shameless plug
+    <span class="text-rose-500 font-bold">]</span>
+  </div>
+  Psst. Check out my latest project, <a class="text-sm" href="https://stonksfolio.com" target="_blank">Stonksfolio</a>, if you need an awesome portfolio tracker!
+</div>
+
+</article>
+
+    </main>
+
+    <footer class="text-center mt-10 pb-10">
+  <a href="https://twitter.com/gmitrev" rel="nofollow" target="_blank" target="_blank"> Follow me on Twitter</a>
+</footer>
+
+  </body>
+</html>

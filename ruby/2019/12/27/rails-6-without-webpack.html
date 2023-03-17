@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Yanking Webpacker out of Rails (6) - Georgi Mitrev</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+  </head>
+  <body class="bg-cream mx-8 lg:mx-auto lg:w-full lg:max-w-2xl flex flex-col h-screen">
+    <header class="mt-6 my-12 flex">
+  <div class="flex-grow">
+    <a href="/" class="w-8 inline-block">/</a>
+  </div>
+
+  <div class="flex space-x-10">
+    <a href="/projects">/projects</a>
+    <a href="/about">/about</a>
+  </div>
+</header>
+
+
+    <main class="grow">
+      <!-- <div class='banner'> -->
+<!--   Check out my newest project for tracking portfolio performance, -->
+<!--   <a target='_blank' href='https://stonksfolio.com'>Stonksfolio</a>. -->
+<!-- </div> -->
+
+<div class="my-8 text-center">
+  <h1>Yanking Webpacker out of Rails (6)</h1>
+
+  <span class="font-monospace text-xs text-slate-400">Dec 27, 2019</span>
+</div>
+
+<article class="mt-6 grow">
+  <p>Call me a grumpy old man buy I find webpack(er) to be a major pain in the ass. It overcomplicates
+things and turns (previously) simple tasks such as installing bootstrap into a nightmare. This is
+why I prefer not to use it for small personal projects.</p>
+
+<p>Yes, it might be better for js-centric apps but not everyone makes SPAs. This post will explain how
+to remove <code class="language-plaintext highlighter-rouge">webpacker</code> and add javascript back to the sprockets pipeline.</p>
+
+<p>Sadly, we can’t simply use <code class="language-plaintext highlighter-rouge">rails new --skip-webpack</code> and call it a day. There is some manual work
+involved. Also, a warning: it will be harder to use newer Rails 6 features such as Action Text.</p>
+
+<h2 id="creating-a-new-application">Creating a new application</h2>
+
+<p>When creating a new application, you can supply two flags that prevent <code class="language-plaintext highlighter-rouge">webpacker</code> from being
+installed. The first is <code class="language-plaintext highlighter-rouge">--skip-webpack-install</code> which prevents the generator from running <code class="language-plaintext highlighter-rouge">rails
+webpacker:install</code>. The second is <code class="language-plaintext highlighter-rouge">--skip-javascript</code>, which drops the <code class="language-plaintext highlighter-rouge">webpacker</code> gem from the
+Gemfile. The final command is:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rails new app-name <span class="nt">--skip-webpack-install</span> <span class="nt">--skip-javascript</span>
+</code></pre></div></div>
+
+<h2 id="adding-javascript-to-the-sprockets-pipeline">Adding javascript to the sprockets pipeline</h2>
+
+<p>You will find that the <code class="language-plaintext highlighter-rouge">app/assets/javascripts</code> folder no longer exists. Create it by running the
+following command in your shell:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> app/assets/javascripts
+</code></pre></div></div>
+
+<p>Then, create <code class="language-plaintext highlighter-rouge">app/assets/javascripts/application.js</code> with the following contents (taken from a
+Rails 5 app):</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="sr">//</span><span class="o">=</span> <span class="nb">require</span> <span class="n">rails</span><span class="o">-</span><span class="n">ujs</span>
+<span class="sr">//</span><span class="o">=</span> <span class="nb">require</span> <span class="n">turbolinks</span>
+<span class="sr">//</span><span class="o">=</span> <span class="n">require_tree</span> <span class="o">.</span>
+</code></pre></div></div>
+
+<p><em>Note</em>: If you want to use ActionCable, you can also copy a pristine <code class="language-plaintext highlighter-rouge">cable.js</code> from a Rails 5 application.</p>
+
+<p>Next, open <code class="language-plaintext highlighter-rouge">app/assets/config/manifest.js</code> and <a href="https://github.com/rails/sprockets/blob/master/UPGRADING.md#manifestjs">add the following
+line</a>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">...</span>
+
+<span class="sr">//</span><span class="o">=</span> <span class="n">link_directory</span> <span class="o">..</span><span class="sr">/javascripts .js
+</span></code></pre></div></div>
+
+<p>Finally, open you application layout (<code class="language-plaintext highlighter-rouge">app/views/layouts/application.html.erb</code>) and add the
+following line:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="sx">%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %&gt;
+</span></code></pre></div></div>
+
+<p>Also, remove lines with <code class="language-plaintext highlighter-rouge">javascript_pack_tag</code> if there are any. You’re done.</p>
+
+<h2 id="disclaimer">Disclaimer</h2>
+
+<p>Webpacker is the future and being ignorant with regard to how it works is probably not a good idea.
+I strongly urge everyone to learn how to use it properly. Still, being quite a new feature
+(introduced in Rails 6), the tooling and general knowledge base related to it are still quite
+limited.
+This is why I generally avoid it for personal projects, where I don’t want to spend an
+hour trying to setup <code class="language-plaintext highlighter-rouge">bootstrap</code> when it should not take me more than a couple of minutes.</p>
+
+</article>
+
+    </main>
+
+    <footer class="text-center mt-10 pb-10">
+  <a href="https://twitter.com/gmitrev" rel="nofollow" target="_blank" target="_blank"> Follow me on Twitter</a>
+</footer>
+
+  </body>
+</html>

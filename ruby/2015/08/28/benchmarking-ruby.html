@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Benchmarking Ruby - Georgi Mitrev</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+  </head>
+  <body class="bg-cream mx-8 lg:mx-auto lg:w-full lg:max-w-2xl flex flex-col h-screen">
+    <header class="mt-6 my-12 flex">
+  <div class="flex-grow">
+    <a href="/" class="w-8 inline-block">/</a>
+  </div>
+
+  <div class="flex space-x-10">
+    <a href="/projects">/projects</a>
+    <a href="/about">/about</a>
+  </div>
+</header>
+
+
+    <main class="grow">
+      <!-- <div class='banner'> -->
+<!--   Check out my newest project for tracking portfolio performance, -->
+<!--   <a target='_blank' href='https://stonksfolio.com'>Stonksfolio</a>. -->
+<!-- </div> -->
+
+<div class="my-8 text-center">
+  <h1>Benchmarking Ruby</h1>
+
+  <span class="font-monospace text-xs text-slate-400">Aug 28, 2015</span>
+</div>
+
+<article class="mt-6 grow">
+  <p>Benchmarking Ruby code is essential for improving the performance of applications. The Ruby
+Standard Library provides a <a href="http://ruby-doc.org/stdlib-2.5.0/libdoc/benchmark/rdoc/Benchmark.html">Benchmark module</a>
+that can be used to measure the running time of any Ruby code block.</p>
+
+<p>First, lets require it:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'benchmark'</span>
+<span class="c1"># =&gt; true</span>
+</code></pre></div></div>
+
+<h2 id="benchmarking-a-single-block-of-code">Benchmarking a single block of code</h2>
+
+<p>For benchmarking simple blocks of code, use the <code class="language-plaintext highlighter-rouge">#measure</code> method:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">puts</span> <span class="no">Benchmark</span><span class="p">.</span><span class="nf">measure</span> <span class="p">{</span> <span class="mi">10_000_000</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="no">Object</span><span class="p">.</span><span class="nf">new</span> <span class="p">}</span> <span class="p">}</span>
+<span class="c1">#        user     system      total        real</span>
+<span class="c1"># =&gt; 1.280000   0.000000   1.280000 (  1.283235)</span>
+</code></pre></div></div>
+
+<p>The result is in seconds, so instantiating 10 million objects takes a little more than a second.</p>
+
+<p>If we need to print a custom message, we can capture the result and process it:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">result</span> <span class="o">=</span> <span class="no">Benchmark</span><span class="p">.</span><span class="nf">realtime</span> <span class="p">{</span> <span class="mi">10_000_000</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="no">Object</span><span class="p">.</span><span class="nf">new</span> <span class="p">}</span> <span class="p">}</span>
+
+<span class="nb">puts</span> <span class="s2">"Creating ten million objects: </span><span class="si">#{</span><span class="n">realtime</span><span class="p">.</span><span class="nf">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">s"</span>
+<span class="c1"># =&gt; Creating ten million objects: 1.29s</span>
+</code></pre></div></div>
+
+<h2 id="comparing-several-blocks">Comparing several blocks</h2>
+
+<p>We often need to compare several approaches to a problem in order to find out the best one. Let’s
+say we want to compare the following methods for finding the n-th fibonacci number:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># DP version</span>
+<span class="k">def</span> <span class="nf">fib_dp</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+  <span class="p">(</span><span class="mi">2</span><span class="o">..</span><span class="n">n</span><span class="p">).</span><span class="nf">reduce</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="n">m</span> <span class="o">&lt;&lt;</span> <span class="n">m</span><span class="p">.</span><span class="nf">last</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="nf">reduce</span><span class="p">(:</span><span class="o">+</span><span class="p">)</span> <span class="p">}[</span><span class="n">n</span><span class="p">]</span>
+<span class="k">end</span>
+
+<span class="c1"># Recursive version</span>
+<span class="k">def</span> <span class="nf">fib_rec</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+  <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span>
+  <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span>
+
+  <span class="n">fib_rec</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib_rec</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The unoptimized recursive version is very slow and will choke on values larger than 40. We can use
+the <code class="language-plaintext highlighter-rouge">#bm</code> method to measure just how much slower it is:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Benchmark</span><span class="p">.</span><span class="nf">bm</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'dp:'</span><span class="p">)</span>        <span class="p">{</span> <span class="n">fib_dp</span><span class="p">(</span><span class="mi">35</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'recursive:'</span><span class="p">)</span> <span class="p">{</span> <span class="n">fib_rec</span><span class="p">(</span><span class="mi">35</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1">#                  user     system      total        real</span>
+<span class="c1"># dp:          0.000000   0.000000   0.000000 (  0.000035)</span>
+<span class="c1"># recursive:   1.680000   0.000000   1.680000 (  1.671631)</span>
+</code></pre></div></div>
+
+<p>The first argument to <code class="language-plaintext highlighter-rouge">#bm</code> defines the label width and larger values will shift the results
+further to the right. Anyway, we got what we wanted - the recursive function takes more than a
+second and a half and the DP version takes a negligible amount of time. In fact, it can calculate
+very large fibonacci numbers in very little time:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">puts</span> <span class="no">Benchmark</span><span class="p">.</span><span class="nf">measure</span> <span class="p">{</span> <span class="n">fib_dp</span><span class="p">(</span><span class="mi">100_000</span><span class="p">)</span> <span class="p">}</span>
+<span class="c1">#        user     system      total        real</span>
+<span class="c1"># =&gt; 0.350000   0.000000   0.350000 (  0.350249)</span>
+</code></pre></div></div>
+
+<p>There is another method in the Benchmark library called <code class="language-plaintext highlighter-rouge">#bmbm</code> which runs the tests twice - the
+first time to warm up the runtime environment and the second time to measure the results. You will
+want to use this method if you worry that the order of execution of the different code blocks will
+have an effect on their execution time.</p>
+
+<h2 id="using-benchmark-ips">Using benchmark-ips</h2>
+
+<p>The <a href="https://github.com/evanphx/benchmark-ips">benchmark-ips</a> gem provides even more features than
+the default Benchmark module. Install it and then require it in your program:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
+</code></pre></div></div>
+
+<p>Let’s use it to test our previous methods:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'dp: '</span><span class="p">)</span>        <span class="p">{</span> <span class="n">fib_dp</span><span class="p">(</span><span class="mi">35</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'recursive: '</span><span class="p">)</span> <span class="p">{</span> <span class="n">fib_rec</span><span class="p">(</span><span class="mi">35</span><span class="p">)</span> <span class="p">}</span>
+
+  <span class="n">x</span><span class="p">.</span><span class="nf">compare!</span>
+<span class="k">end</span>
+
+<span class="c1"># Calculating -------------------------------------</span>
+<span class="c1">#                 dp:      5.600k i/100ms</span>
+<span class="c1">#          recursive:      1.000  i/100ms</span>
+<span class="c1"># -------------------------------------------------</span>
+<span class="c1">#                 dp:      60.299k (± 2.0%) i/s -    302.400k</span>
+<span class="c1">#          recursive:       0.517  (± 0.0%) i/s -      3.000  in   5.800686s</span>
+<span class="c1">#</span>
+<span class="c1"># Comparison:</span>
+<span class="c1">#                 dp: :    60299.5 i/s</span>
+<span class="c1">#          recursive: :        0.5 i/s - 116590.15x slower</span>
+</code></pre></div></div>
+
+<p>The only difference is the <code class="language-plaintext highlighter-rouge">x.compare!</code> call at the end, but we get a lot more valuable information
+about the performance of the two methods - iterations per second, standard deviation and finally a
+comparison which shows that the unoptimized recursive version is more than 100 000 times slower
+than the DP version!</p>
+
+<p>There are a few more options available, like setting the time for the warmup and calculation phases
+or creating a custom suite.</p>
+
+<h2 id="conclusion-and-further-reading">Conclusion and further reading</h2>
+
+<p>If you ever wondered if <code class="language-plaintext highlighter-rouge">Enumerable#each</code> is faster than a <code class="language-plaintext highlighter-rouge">for</code> loop or if <code class="language-plaintext highlighter-rouge">[].map.flatten</code> is
+slower than <code class="language-plaintext highlighter-rouge">[].flat_map</code>, take a look at the
+<a href="https://github.com/JuanitoFatas/fast-ruby">fast-ruby</a> repo. It contains answers to those questions
+and to many others.</p>
+
+<p>The Benchmark module and benchmark-ips gem are really easy to use and provide great information
+about the performance of your code. They are an essential tool in every developers toolbelt.</p>
+
+</article>
+
+    </main>
+
+    <footer class="text-center mt-10 pb-10">
+  <a href="https://twitter.com/gmitrev" rel="nofollow" target="_blank" target="_blank"> Follow me on Twitter</a>
+</footer>
+
+  </body>
+</html>

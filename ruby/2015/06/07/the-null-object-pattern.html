@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>The Null Object pattern - Georgi Mitrev</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+  </head>
+  <body class="bg-cream mx-8 lg:mx-auto lg:w-full lg:max-w-2xl flex flex-col h-screen">
+    <header class="mt-6 my-12 flex">
+  <div class="flex-grow">
+    <a href="/" class="w-8 inline-block">/</a>
+  </div>
+
+  <div class="flex space-x-10">
+    <a href="/projects">/projects</a>
+    <a href="/about">/about</a>
+  </div>
+</header>
+
+
+    <main class="grow">
+      <!-- <div class='banner'> -->
+<!--   Check out my newest project for tracking portfolio performance, -->
+<!--   <a target='_blank' href='https://stonksfolio.com'>Stonksfolio</a>. -->
+<!-- </div> -->
+
+<div class="my-8 text-center">
+  <h1>The Null Object pattern</h1>
+
+  <span class="font-monospace text-xs text-slate-400">Jun 7, 2015</span>
+</div>
+
+<article class="mt-6 grow">
+  <p>Every Ruby programmer eventually encounters the dreaded <code class="language-plaintext highlighter-rouge">NoMethodError</code> exception.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">undefined</span> <span class="nb">method</span> <span class="sb">`first_name' for nil:NilClass
+</span></code></pre></div></div>
+
+<p>We learn to live with it and handle it in various nasty ways. Like using <code class="language-plaintext highlighter-rouge">try</code>:</p>
+
+<div class="language-slim highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">tr</span>
+  <span class="nt">td</span><span class="w"> </span><span class="p">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">human_attribute_name</span><span class="p">(</span><span class="ss">:vat_number</span><span class="p">)</span>
+  <span class="nt">td</span><span class="w"> </span><span class="p">=</span> <span class="vi">@client</span><span class="p">.</span><span class="nf">try</span><span class="p">(</span><span class="ss">:vat_number</span><span class="p">)</span>
+<span class="nt">tr</span>
+  <span class="nt">td</span><span class="w"> </span><span class="p">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">human_attribute_name</span><span class="p">(</span><span class="ss">:company_ownership_type_id</span><span class="p">)</span>
+  <span class="nt">td</span><span class="w"> </span><span class="p">=</span> <span class="vi">@client</span><span class="p">.</span><span class="nf">ctry</span><span class="p">(</span><span class="ss">:company_ownership_type</span><span class="p">,</span> <span class="ss">:name_bg</span><span class="p">)</span>
+<span class="nt">tr</span>
+  <span class="nt">td</span><span class="w"> </span><span class="p">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">human_attribute_name</span><span class="p">(</span><span class="ss">:company_branch_id</span><span class="p">)</span>
+  <span class="nt">td</span><span class="w"> </span><span class="p">=</span> <span class="vi">@client</span><span class="p">.</span><span class="nf">ctry</span><span class="p">(</span><span class="ss">:company_branch</span><span class="p">,</span> <span class="ss">:name_bg</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>This code is bad because our <code class="language-plaintext highlighter-rouge">@client</code> should never actually be <code class="language-plaintext highlighter-rouge">nil</code>. We can improve it by using the
+Null Object Pattern.</p>
+
+<h2 id="an-example">An example</h2>
+
+<p>Imagine we have an application and have to print a greeting to the current user, something like
+“Welcome, George”. The first thing we try may be:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Welcome</span><span class="p">,</span> <span class="o">&lt;</span><span class="sx">%= current_user.name %&gt;
+</span></code></pre></div></div>
+
+<p>But then we log out and are greeted with an old friend:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">NoMethodError</span><span class="p">:</span> <span class="n">undefined</span> <span class="nb">method</span> <span class="sb">`name' for nil:NilClass
+</span></code></pre></div></div>
+
+<p>We quickly fix our code by adding a <code class="language-plaintext highlighter-rouge">nil</code> check and also decide we want to greet logged-out people
+too:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Welcome</span><span class="p">,</span> <span class="o">&lt;</span><span class="sx">%= current_user.nil? ? 'Guest' : current_user.name %&gt;
+</span></code></pre></div></div>
+
+<p>This works as we originally intended and is good enough for production. Or is it? We start using
+the same pattern in different places, our collegues also pick it up and a few months later we find
+ourselves in with filthy mess that is really hard to refactor.</p>
+
+<p>Our next problem comes with a change in the requirements - guest users are not to be greeted as
+“Guest”, but as “Stranger”, because our boss thinks it’s funnier. We start working on our task and
+find that there are 78 occurances of the string “Guess” in our view code and we need to change each
+one separately because we cannot mass replace such a common word as ‘Guest’. We curse the gods and
+get on with it, because this is life and life sucks.</p>
+
+<p>Could this have been avoided? Yes, and the solution is really simple.</p>
+
+<h2 id="the-pattern">The pattern</h2>
+
+<p>What we need is way to make <code class="language-plaintext highlighter-rouge">current_user</code> respond to the <code class="language-plaintext highlighter-rouge">name</code> method even if no user is
+currently logged in. We start by introducing a new class:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">NullUser</span>
+  <span class="k">def</span> <span class="nf">name</span>
+    <span class="s1">'Guest'</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">logged_in?</span>
+    <span class="kp">false</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">NullUser</code> class should conform to the same public API as the <code class="language-plaintext highlighter-rouge">User</code> class, which requires
+maintenance, but everything comes at a cost.</p>
+
+<p>Next, we change our <code class="language-plaintext highlighter-rouge">current_user</code> method to return a new instance of <code class="language-plaintext highlighter-rouge">NullUser</code> when no user is
+logged in:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">current_user</span>
+  <span class="n">current_user_session</span> <span class="o">||</span> <span class="no">NullUser</span><span class="p">.</span><span class="nf">new</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now when our new requirements arrive, we only need to update the <code class="language-plaintext highlighter-rouge">name</code> method of the <code class="language-plaintext highlighter-rouge">NullUser</code>
+class and need not to worry about breaking anything else. If we dislike the name of the
+class, we may also use <code class="language-plaintext highlighter-rouge">Guest</code> or <code class="language-plaintext highlighter-rouge">GuestUser</code>, it doesn’t matter.</p>
+
+<h2 id="drawbacks">Drawbacks</h2>
+
+<p>The Null Object is not a silver bullet and not something you want to use for all your classes. It
+should not be used to avoid all <code class="language-plaintext highlighter-rouge">nil</code> errors but as a way to provide default behaviour when you get
+an unexpected <code class="language-plaintext highlighter-rouge">nil</code>. Sometimes <code class="language-plaintext highlighter-rouge">nil</code> is just <code class="language-plaintext highlighter-rouge">nil</code> and should be handled as such. You should also
+have an extensive test suite that ensures that nowhere a <code class="language-plaintext highlighter-rouge">nil</code> may be assigned instead of your Null
+Object instance, because that will break wreak havoc on your happy little world.</p>
+
+<h2 id="last-words">Last words</h2>
+
+<p>The pattern really shines in the cases it’s is suited for, such as the NullUser or representing the
+last element of a list/tree. Apply it with care and it may improve your life a little.</p>
+
+</article>
+
+    </main>
+
+    <footer class="text-center mt-10 pb-10">
+  <a href="https://twitter.com/gmitrev" rel="nofollow" target="_blank" target="_blank"> Follow me on Twitter</a>
+</footer>
+
+  </body>
+</html>

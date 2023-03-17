@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>The Safe Navigation Operator (&.) in Ruby - Georgi Mitrev</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+  </head>
+  <body class="bg-cream mx-8 lg:mx-auto lg:w-full lg:max-w-2xl flex flex-col h-screen">
+    <header class="mt-6 my-12 flex">
+  <div class="flex-grow">
+    <a href="/" class="w-8 inline-block">/</a>
+  </div>
+
+  <div class="flex space-x-10">
+    <a href="/projects">/projects</a>
+    <a href="/about">/about</a>
+  </div>
+</header>
+
+
+    <main class="grow">
+      <!-- <div class='banner'> -->
+<!--   Check out my newest project for tracking portfolio performance, -->
+<!--   <a target='_blank' href='https://stonksfolio.com'>Stonksfolio</a>. -->
+<!-- </div> -->
+
+<div class="my-8 text-center">
+  <h1>The Safe Navigation Operator (&.) in Ruby</h1>
+
+  <span class="font-monospace text-xs text-slate-400">Nov 13, 2015</span>
+</div>
+
+<article class="mt-6 grow">
+  <p>The most interesting addition to Ruby 2.3.0 is the Safe Navigation Operator(<code class="language-plaintext highlighter-rouge">&amp;.</code>). A similar
+operator has been present in C# and Groovy for a long time with a slightly different syntax - <code class="language-plaintext highlighter-rouge">?.</code>.
+So what does it do?</p>
+
+<h4 id="tldr">TLDR</h4>
+
+<p>It is used for avoiding <code class="language-plaintext highlighter-rouge">NoMethodError</code> exceptions when calling methods on objects that <em>may</em> be
+<code class="language-plaintext highlighter-rouge">nil</code>.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span> <span class="o">=</span> <span class="kp">nil</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">number</span>
+<span class="c1"># =&gt; NoMethodError (undefined method `number' for nil:NilClass)`)</span>
+
+<span class="n">account</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">number</span>
+<span class="c1"># =&gt; nil</span>
+</code></pre></div></div>
+
+<h2 id="example">Example</h2>
+
+<p>Imagine you have an <code class="language-plaintext highlighter-rouge">account</code> that has an <code class="language-plaintext highlighter-rouge">owner</code> and you want to get the <code class="language-plaintext highlighter-rouge">owner</code>’s <code class="language-plaintext highlighter-rouge">address</code>. If
+you want to be safe and not risk a <code class="language-plaintext highlighter-rouge">nil</code> error, you would write something like the following:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">account</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="o">...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This is really verbose and annoying to type. ActiveSupport includes the <code class="language-plaintext highlighter-rouge">try</code> method which has a
+similar behaviour (but with few key differences that will be discussed later):</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">account</span><span class="p">.</span><span class="nf">try</span><span class="p">(</span><span class="ss">:owner</span><span class="p">).</span><span class="nf">try</span><span class="p">(</span><span class="ss">:address</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>It accomplishes the same thing - it either returns the address or <code class="language-plaintext highlighter-rouge">nil</code> if some value along the
+chain is <code class="language-plaintext highlighter-rouge">nil</code>. The first example may also return <code class="language-plaintext highlighter-rouge">false</code> if, for example, the <code class="language-plaintext highlighter-rouge">owner</code> is set to
+<code class="language-plaintext highlighter-rouge">false</code>.</p>
+
+<h2 id="using-the-safe-navigation-operator-">Using the safe navigation operator (&amp;.)</h2>
+
+<p>We can rewrite the previous example using the safe navigation operator:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">owner</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">address</span>
+</code></pre></div></div>
+
+<p>The syntax is a bit awkward but I guess we will have to deal with it because it does make the code
+more compact.</p>
+
+<h3 id="more-examples">More examples</h3>
+
+<p>Let’s compare all three approaches in more detail.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span> <span class="o">=</span> <span class="no">Account</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">owner: </span><span class="kp">nil</span><span class="p">)</span> <span class="c1"># account without an owner</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; NoMethodError: undefined method `address' for nil:NilClass</span>
+
+<span class="n">account</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; nil</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">try</span><span class="p">(</span><span class="ss">:owner</span><span class="p">).</span><span class="nf">try</span><span class="p">(</span><span class="ss">:address</span><span class="p">)</span>
+<span class="c1"># =&gt; nil</span>
+
+<span class="n">account</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">owner</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; nil</span>
+</code></pre></div></div>
+
+<p>No surprises so far. What if <code class="language-plaintext highlighter-rouge">owner</code> is <code class="language-plaintext highlighter-rouge">false</code> (unlikely but not impossible in the exciting world
+of shitty code)?</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span> <span class="o">=</span> <span class="no">Account</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">owner: </span><span class="kp">false</span><span class="p">)</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; NoMethodError: undefined method `address' for false:FalseClass j</span>
+
+<span class="n">account</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; false</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">try</span><span class="p">(</span><span class="ss">:owner</span><span class="p">).</span><span class="nf">try</span><span class="p">(</span><span class="ss">:address</span><span class="p">)</span>
+<span class="c1"># =&gt; nil</span>
+
+<span class="n">account</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">owner</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; undefined method `address' for false:FalseClass`</span>
+</code></pre></div></div>
+
+<p>Here comes the first surprise - the <code class="language-plaintext highlighter-rouge">&amp;.</code> syntax only skips <code class="language-plaintext highlighter-rouge">nil</code> but recognizes <code class="language-plaintext highlighter-rouge">false</code>! It is not
+exactly equivalent to the <code class="language-plaintext highlighter-rouge">s1 &amp;&amp; s1.s2 &amp;&amp; s1.s2.s3</code> syntax.</p>
+
+<p>What if the owner is present but doesn’t respond to <code class="language-plaintext highlighter-rouge">address</code>?</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span> <span class="o">=</span> <span class="no">Account</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">owner: </span><span class="no">Object</span><span class="p">.</span><span class="nf">new</span><span class="p">)</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; NoMethodError: undefined method `address' for #&lt;Object:0x00559996b5bde8&gt;</span>
+
+<span class="n">account</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; NoMethodError: undefined method `address' for #&lt;Object:0x00559996b5bde8&gt;`</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">try</span><span class="p">(</span><span class="ss">:owner</span><span class="p">).</span><span class="nf">try</span><span class="p">(</span><span class="ss">:address</span><span class="p">)</span>
+<span class="c1"># =&gt; nil</span>
+
+<span class="n">account</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">owner</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; NoMethodError: undefined method `address' for #&lt;Object:0x00559996b5bde8&gt;`</span>
+</code></pre></div></div>
+
+<p>Oops, the <code class="language-plaintext highlighter-rouge">try</code> method doesn’t check if the receiver responds to the given method. This is why
+it’s always better to use the stricter version of <code class="language-plaintext highlighter-rouge">try</code> - <code class="language-plaintext highlighter-rouge">try!</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span><span class="p">.</span><span class="nf">try!</span><span class="p">(</span><span class="ss">:owner</span><span class="p">).</span><span class="nf">try!</span><span class="p">(</span><span class="ss">:address</span><span class="p">)</span>
+<span class="c1"># =&gt; NoMethodError: undefined method `address' for #&lt;Object:0x00559996b5bde8&gt;`</span>
+</code></pre></div></div>
+
+<h2 id="bonus-23-features---arraydig-and-hashdig">Bonus 2.3 features - Array#dig and Hash#dig</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">#dig</code> method is probably the most useful feature in this version. No longer do we have to
+write abominations like the following:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">address</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="ss">:account</span><span class="p">].</span><span class="nf">try</span><span class="p">(</span><span class="ss">:[]</span><span class="p">,</span> <span class="ss">:owner</span><span class="p">).</span><span class="nf">try</span><span class="p">(</span><span class="ss">:[]</span><span class="p">,</span> <span class="ss">:address</span><span class="p">)</span>
+
+<span class="c1"># or</span>
+
+<span class="n">address</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="ss">:account</span><span class="p">].</span><span class="nf">fetch</span><span class="p">(</span><span class="ss">:owner</span><span class="p">)</span> <span class="p">{</span> <span class="p">{}</span> <span class="p">}.</span><span class="nf">fetch</span><span class="p">(</span><span class="ss">:address</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We can now simply use <code class="language-plaintext highlighter-rouge">Hash#dig</code> and accomplish the same thing:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">address</span> <span class="o">=</span> <span class="n">params</span><span class="p">.</span><span class="nf">dig</span><span class="p">(</span><span class="ss">:account</span><span class="p">,</span> <span class="ss">:owner</span><span class="p">,</span> <span class="ss">:address</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="border border-pink-200 p-4 pt-2 bg-rose-50 rounded text-sm">
+  <div class="text-pink-300  text-center mb-2" style="font-size: 8px">
+    <span class="text-rose-500 font-bold">[</span>
+    shameless plug
+    <span class="text-rose-500 font-bold">]</span>
+  </div>
+  Psst. Check out my latest project, <a class="text-sm" href="https://stonksfolio.com" target="_blank">Stonksfolio</a>, if you need an awesome portfolio tracker!
+</div>
+
+</article>
+
+    </main>
+
+    <footer class="text-center mt-10 pb-10">
+  <a href="https://twitter.com/gmitrev" rel="nofollow" target="_blank" target="_blank"> Follow me on Twitter</a>
+</footer>
+
+  </body>
+</html>
