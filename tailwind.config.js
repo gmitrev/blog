@@ -18,7 +18,8 @@ module.exports = {
       colors: {
         cream: "#FFF1DE",
         purplish: "#F7DCEC",
-        greenish: "#A3CFA7"
+        olive: "#73956F",
+        viridian: "#53917E"
       },
     },
   },
