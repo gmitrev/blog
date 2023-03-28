@@ -7,7 +7,7 @@ categories: ruby
 published: true
 ---
 
-Call me a grumpy old man buy I find webpack(er) to be a major pain in the ass. It overcomplicates
+Call me a grumpy old man but I find webpack(er) to be a major pain in the ass. It overcomplicates
 things and turns (previously) simple tasks such as installing bootstrap into a nightmare. This is
 why I prefer not to use it for small personal projects.
 
