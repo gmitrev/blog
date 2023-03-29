@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Running a Rails app from your home - Georgi Mitrev</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script async="" data-website-id="f7e00ced-3f46-4ba8-b750-9d8e8b0ef5eb" defer="" src="https://analytics.mitrev.net/umami.js" /></script>
+  </head>
+  <body class="bg-cream mx-8 lg:mx-auto lg:w-full lg:max-w-2xl flex flex-col h-screen">
+    <header class="mt-6 my-12 flex">
+  <div class="flex-grow">
+    <a href="/" class="w-8 inline-block">/</a>
+  </div>
+
+  <div class="flex space-x-10">
+    <a href="/projects">/projects</a>
+    <a href="/about">/about</a>
+  </div>
+</header>
+
+
+    <main class="grow">
+      <!-- <div class='banner'> -->
+<!--   Check out my newest project for tracking portfolio performance, -->
+<!--   <a target='_blank' href='https://stonksfolio.com'>Stonksfolio</a>. -->
+<!-- </div> -->
+
+<div class="my-8 text-center">
+  <h1>Running a Rails app from your home</h1>
+
+  <span class="font-monospace text-xs text-slate-400">Mar 29, 2023</span>
+</div>
+
+<article class="mt-6 grow">
+  <p>You should never run any serious applications from your local network. Never ever allow public
+access into your home network. If you absolutely must, use a VPN. But if you like to live
+dangerously, read on.</p>
+
+<p>This post is mostly documentation for my future self. I have a small private application that I
+want to be able to access even when I’m not home. It’s not that important so that I want to pay
+for a VPS and as I have some spare RaspberryPIs, I decided to finally use them for something.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<ul class="list-disc">
+  <li>
+    A computer within a private network without a static IPv4 address. In this case, a RaspberryPI.
+  </li>
+  <li>
+    A VPS with a static IPv4 address, used only as a jump-off point.
+  </li>
+</ul>
+
+<h2 id="overview">Overview</h2>
+
+<p>The first step is to deploy the application to the RaspberryPI. There are a lot of ways to do it - I prefer using capistrano and will document it in a follow-up post. Our app can be served on
+any port and in our case this will be <code class="language-plaintext highlighter-rouge">80</code>.</p>
+
+<p>The second step is to set up your domain with your public VPS. Create an
+<code class="language-plaintext highlighter-rouge">A</code> DNS record that points to its IPv4.</p>
+
+<p>For proxying the traffic between the two machines, we’ll use <a href="https://github.com/fatedier/frp" target="_blank">FRP</a>. FRP is a reverse proxy that’s
+designed for exposing local services to the Internet. You can also use it to create a service
+similar to ngrok if you need to expose your development servers to the Internet. This is
+particularly useful if you need to test webhooks or oAuth integration with a third-party API.</p>
+
+<p>FRP has a server and a client component that are part of the same package. We’ll run an FRP
+server on the VPS and the FRP client on our RaspberryPI.</p>
+
+<h2 id="setting-up-the-frp-server">Setting up the FRP server</h2>
+
+<p>Start by installing <code class="language-plaintext highlighter-rouge">FRP</code> on your VPS. We’ll put the executables in our home folder. <code class="language-plaintext highlighter-rouge">FRP</code> needs a
+simple config file that tells it on what port it will receive the requests and a second port that
+will be used by the FRP client. Place the <code class="language-plaintext highlighter-rouge">frps.ini</code> in the home directory as well
+with the following contents:</p>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[common]</span>
+<span class="c">; this is the port where the FRP client will connect to the FRP server
+</span><span class="py">bind_port</span> <span class="p">=</span> <span class="s">7000</span>
+
+<span class="c">; this is where we'll proxy the requests from our server
+</span><span class="py">vhost_http_port</span> <span class="p">=</span> <span class="s">8080</span>
+</code></pre></div></div>
+
+<p>Start the FRP server by running the following command in the shell:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>frps <span class="nt">-c</span> frps.ini
+</code></pre></div></div>
+
+<p>Running it in the shell is a good way to test things out but ultimately we want the run the server
+in a more-robust (robuster?) way.</p>
+
+<h3 id="manage-the-frp-server-with-systemd">Manage the FRP server with systemd</h3>
+
+<p><code class="language-plaintext highlighter-rouge">systemd</code> is the standard way to run services on UNIX machines. Start by creating a service file
+for our server in <code class="language-plaintext highlighter-rouge">/etc/systemd/system/frps.service</code>:</p>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Unit]</span>
+<span class="py">Description</span> <span class="p">=</span> <span class="s">frp server</span>
+<span class="py">After</span> <span class="p">=</span> <span class="s">network.target syslog.target</span>
+<span class="py">Wants</span> <span class="p">=</span> <span class="s">network.target</span>
+
+<span class="nn">[Service]</span>
+<span class="py">Type</span> <span class="p">=</span> <span class="s">simple</span>
+<span class="py">ExecStart</span> <span class="p">=</span> <span class="s">/home/deploy/frps -c /home/deploy/frps.ini</span>
+<span class="py">Restart</span><span class="p">=</span><span class="s">always</span>
+<span class="py">RestartSec</span><span class="p">=</span><span class="s">3</span>
+<span class="py">TimeoutStartSec</span><span class="p">=</span><span class="s">300</span>
+<span class="py">TimeoutStopSec</span><span class="p">=</span><span class="s">Infinity</span>
+
+<span class="nn">[Install]</span>
+<span class="py">WantedBy</span> <span class="p">=</span> <span class="s">multi-user.target</span>
+</code></pre></div></div>
+
+<p>Enable the service and start it by executing the following commands:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl <span class="nb">enable </span>frps.service
+systemctl start frps.service
+</code></pre></div></div>
+
+<p>Use <code class="language-plaintext highlighter-rouge">sudo</code> if your current user doesn’t have the necessary permissions. If all is good, the FRP
+server will be started on machine boot and will be restarted automatically if it fails for any
+reason.</p>
+
+<p>Next, we’ll tell our web server (nginx) to proxy incoming requests to the FRP server.</p>
+
+<h3 id="setting-up-nginx">Setting up nginx</h3>
+
+<p>You can use any other web server as long as it can proxy requests to a unix socket or a different
+port. Nginx is great for this use-case and we’ll use it here.</p>
+
+<p>After installing nginx, we need to set it up to proxy incoming requests to the FRP server. Create a
+file in the <code class="language-plaintext highlighter-rouge">/etc/nginx/sites-enabled</code> folder with the following contents:</p>
+
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># /etc/nginx/sites-enabled/example</span>
+
+<span class="k">server</span> <span class="p">{</span>
+  <span class="kn">listen</span> <span class="mi">80</span><span class="p">;</span>
+  <span class="kn">listen</span> <span class="mi">443</span><span class="p">;</span>
+  <span class="kn">listen</span> <span class="s">[::]:80</span><span class="p">;</span>
+
+  <span class="kn">server_name</span> <span class="s">example.net</span><span class="p">;</span>
+
+  <span class="kn">location</span> <span class="n">/</span> <span class="p">{</span>
+    <span class="kn">proxy_pass</span> <span class="s">http://0.0.0.0:8080</span><span class="p">;</span>
+    <span class="kn">proxy_set_header</span> <span class="s">Host</span> <span class="nv">$host</span><span class="p">;</span>
+    <span class="kn">proxy_set_header</span> <span class="s">X-Real-IP</span> <span class="nv">$remote_addr</span><span class="p">;</span>
+    <span class="kn">proxy_set_header</span> <span class="s">X-Forwarded-For</span> <span class="nv">$proxy_add_x_forwarded_for</span><span class="p">;</span>
+    <span class="kn">proxy_set_header</span> <span class="s">REMOTE-HOST</span> <span class="nv">$remote_addr</span><span class="p">;</span>
+    <span class="kn">proxy_set_header</span> <span class="s">origin</span> <span class="s">'http://example.net'</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Make sure to point the <code class="language-plaintext highlighter-rouge">proxy_pass</code> directive to the same port we defined in the <code class="language-plaintext highlighter-rouge">frps.ini</code> file
+above with the <code class="language-plaintext highlighter-rouge">vhost_http_port</code> line - <code class="language-plaintext highlighter-rouge">8080</code> in our case.</p>
+
+<p>At this point, we may need to reload <code class="language-plaintext highlighter-rouge">nginx</code> for the changes to take effect:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl reload nginx.service
+</code></pre></div></div>
+
+<p>This is all we need to set up on the VPS.</p>
+
+<h2 id="setting-up-the-frp-server-1">Setting up the FRP server</h2>
+
+<p>Next, we’ll jump over to the RaspberryPI for the rest of the setup. Install <code class="language-plaintext highlighter-rouge">FRP</code> and
+create the client configuration file <code class="language-plaintext highlighter-rouge">/home/deploy/frps.ini</code>:</p>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[common]</span>
+<span class="c">; The public IP of our VPS
+</span><span class="py">server_addr</span> <span class="p">=</span> <span class="s">x.x.x.x</span>
+
+<span class="c">; The port of the FRP server we defined as `bind_port` in the server configuration
+</span><span class="py">server_port</span> <span class="p">=</span> <span class="s">7000</span>
+
+<span class="nn">[web]</span>
+<span class="py">type</span> <span class="p">=</span> <span class="s">http</span>
+
+<span class="c">; The port of our local web server where we serve the Rails application
+</span><span class="py">local_port</span> <span class="p">=</span> <span class="s">80</span>
+<span class="py">custom_domains</span> <span class="p">=</span> <span class="s">example.net</span>
+</code></pre></div></div>
+
+<p>Same as on the VPS, we’ll use <code class="language-plaintext highlighter-rouge">systemd</code> to manage the FRP client. Create
+<code class="language-plaintext highlighter-rouge">/etc/systemd/system/frpc.service</code> with the following contents:</p>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Unit]</span>
+<span class="py">Description</span> <span class="p">=</span> <span class="s">frp client</span>
+<span class="py">After</span> <span class="p">=</span> <span class="s">network.target syslog.target</span>
+<span class="py">Wants</span> <span class="p">=</span> <span class="s">network.target</span>
+
+<span class="nn">[Service]</span>
+<span class="py">Type</span> <span class="p">=</span> <span class="s">simple</span>
+<span class="py">ExecStart</span> <span class="p">=</span> <span class="s">/home/deploy/frpc -c /home/deploy/frpc.ini</span>
+<span class="py">Restart</span><span class="p">=</span><span class="s">always</span>
+<span class="py">RestartSec</span><span class="p">=</span><span class="s">3</span>
+
+<span class="nn">[Install]</span>
+<span class="py">WantedBy</span> <span class="p">=</span> <span class="s">multi-user.target</span>
+</code></pre></div></div>
+
+<p>Note that we use <code class="language-plaintext highlighter-rouge">frpc</code> for the client and <code class="language-plaintext highlighter-rouge">frps</code> for the server. Not that I messed them up one too
+many times 😬.</p>
+
+<p>Again, enable and start the service:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl <span class="nb">enable </span>frpc.service
+systemctl start frpc.service
+</code></pre></div></div>
+
+<p>If you set up your Rails application properly, it will now start receiving traffic from your domain
+:). A common mistake is making sure the app is aware of the public host (e.g. <code class="language-plaintext highlighter-rouge">example.net</code>). If
+you want to use SSL, you’ll need to make some minor changes to the config files and expand your
+nginx config but this is out of the scope here.</p>
+
+<p>You may have noticed that there’s nothing Rails-specific about this. You are correct! My plan is to
+write a couple more posts that go into the spefics on how to deploy and serve a Rails application
+in the simplest way possible and this will tie in nicely with them.</p>
+
+</article>
+
+    </main>
+
+    <footer class="text-center mt-10 pb-10">
+  <a href="https://twitter.com/gmitrev" rel="nofollow" target="_blank" target="_blank"> Follow me on Twitter</a>
+</footer>
+
+  </body>
+</html>
