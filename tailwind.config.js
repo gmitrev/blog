@@ -10,7 +10,7 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      heading: ['Optima', 'Candara', '"Noto Sans"', 'source-sans-pro', 'sans-serif'],
+      heading: ['Bitter', 'Georgia', 'Cambria', '"Times New Roman"', 'serif'],
       body: ['Seravek', '"Gill Sans Nova"', 'Ubuntu', 'Calibri', '"DejaVu Sans"', 'source-sans-pro', 'sans-serif'],
       monospace: ['ui-monospace', '"Cascadia Code"', '"Source Code Pro"', 'Menlo', 'Consolas', '"DejaVu Sans Mono"', 'monospace']
     },
