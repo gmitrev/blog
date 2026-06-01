@@ -47,7 +47,6 @@ GEM
     listen (3.8.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    logger (1.7.0)
     mercenary (0.4.0)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
@@ -79,7 +78,6 @@ DEPENDENCIES
   jekyll
   jekyll-postcss
   kramdown
-  logger
   rouge
   webrick
 
