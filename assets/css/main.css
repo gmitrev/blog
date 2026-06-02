@@ -87,4 +87,18 @@ code.language-plaintext {
   .library p {
     @apply text-base
   }
+
+  .lightbox {
+    @apply p-0 bg-transparent border-0 outline-none;
+  }
+
+  .lightbox::backdrop {
+    @apply bg-black/80;
+  }
+
+  .lightbox img {
+    @apply block cursor-zoom-out;
+    max-width: 90vw;
+    max-height: 90vh;
+  }
 }
