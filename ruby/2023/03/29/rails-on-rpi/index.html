@@ -9,19 +9,21 @@
     <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
     <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;600;700&display=swap">
+
     <link rel="stylesheet" href="/assets/css/main.css">
     <script async="" data-website-id="f7e00ced-3f46-4ba8-b750-9d8e8b0ef5eb" defer="" src="https://analytics.mitrev.net/umami.js" /></script>
   </head>
   <body class="bg-cream mx-8 lg:mx-auto lg:w-full lg:max-w-2xl flex flex-col h-screen">
-    <header class="mt-6 my-12 flex">
-  <div class="flex-grow">
-    <a href="/" class="w-8 inline-block">/</a>
-  </div>
+    <header class="mt-6 mb-10 flex items-center justify-between">
+  <a href="/" class="home">/</a>
 
-  <div class="flex space-x-10">
+  <nav class="flex space-x-6">
     <a href="/projects">/projects</a>
     <a href="/about">/about</a>
-  </div>
+  </nav>
 </header>
 
 
@@ -75,12 +77,12 @@ simple config file that tells it on what port it will receive the requests and a
 will be used by the FRP client. Place the <code class="language-plaintext highlighter-rouge">frps.ini</code> in the home directory as well
 with the following contents:</p>
 
-<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[common]</span>
-<span class="c">; this is the port where the FRP client will connect to the FRP server
-</span><span class="py">bind_port</span> <span class="p">=</span> <span class="s">7000</span>
-
-<span class="c">; this is where we'll proxy the requests from our server
-</span><span class="py">vhost_http_port</span> <span class="p">=</span> <span class="s">8080</span>
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[common]</span><span class="w">
+</span><span class="c">; this is the port where the FRP client will connect to the FRP server
+</span><span class="py">bind_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">7000</span>
+<span class="w">
+</span><span class="c">; this is where we'll proxy the requests from our server
+</span><span class="py">vhost_http_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">8080</span>
 </code></pre></div></div>
 
 <p>Start the FRP server by running the following command in the shell:</p>
@@ -96,21 +98,21 @@ in a more-robust (robuster?) way.</p>
 <p><code class="language-plaintext highlighter-rouge">systemd</code> is the standard way to run services on UNIX machines. Start by creating a service file
 for our server in <code class="language-plaintext highlighter-rouge">/etc/systemd/system/frps.service</code>:</p>
 
-<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Unit]</span>
-<span class="py">Description</span> <span class="p">=</span> <span class="s">frp server</span>
-<span class="py">After</span> <span class="p">=</span> <span class="s">network.target syslog.target</span>
-<span class="py">Wants</span> <span class="p">=</span> <span class="s">network.target</span>
-
-<span class="nn">[Service]</span>
-<span class="py">Type</span> <span class="p">=</span> <span class="s">simple</span>
-<span class="py">ExecStart</span> <span class="p">=</span> <span class="s">/home/deploy/frps -c /home/deploy/frps.ini</span>
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Unit]</span><span class="w">
+</span><span class="py">Description</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">frp server</span>
+<span class="py">After</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">network.target syslog.target</span>
+<span class="py">Wants</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">network.target</span>
+<span class="w">
+</span><span class="nn">[Service]</span><span class="w">
+</span><span class="py">Type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">simple</span>
+<span class="py">ExecStart</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">/home/deploy/frps -c /home/deploy/frps.ini</span>
 <span class="py">Restart</span><span class="p">=</span><span class="s">always</span>
 <span class="py">RestartSec</span><span class="p">=</span><span class="s">3</span>
 <span class="py">TimeoutStartSec</span><span class="p">=</span><span class="s">300</span>
 <span class="py">TimeoutStopSec</span><span class="p">=</span><span class="s">Infinity</span>
-
-<span class="nn">[Install]</span>
-<span class="py">WantedBy</span> <span class="p">=</span> <span class="s">multi-user.target</span>
+<span class="w">
+</span><span class="nn">[Install]</span><span class="w">
+</span><span class="py">WantedBy</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">multi-user.target</span>
 </code></pre></div></div>
 
 <p>Enable the service and start it by executing the following commands:</p>
@@ -168,37 +170,37 @@ above with the <code class="language-plaintext highlighter-rouge">vhost_http_por
 <p>Next, we’ll jump over to the RaspberryPI for the rest of the setup. Install <code class="language-plaintext highlighter-rouge">FRP</code> and
 create the client configuration file <code class="language-plaintext highlighter-rouge">/home/deploy/frps.ini</code>:</p>
 
-<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[common]</span>
-<span class="c">; The public IP of our VPS
-</span><span class="py">server_addr</span> <span class="p">=</span> <span class="s">x.x.x.x</span>
-
-<span class="c">; The port of the FRP server we defined as `bind_port` in the server configuration
-</span><span class="py">server_port</span> <span class="p">=</span> <span class="s">7000</span>
-
-<span class="nn">[web]</span>
-<span class="py">type</span> <span class="p">=</span> <span class="s">http</span>
-
-<span class="c">; The port of our local web server where we serve the Rails application
-</span><span class="py">local_port</span> <span class="p">=</span> <span class="s">80</span>
-<span class="py">custom_domains</span> <span class="p">=</span> <span class="s">example.net</span>
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[common]</span><span class="w">
+</span><span class="c">; The public IP of our VPS
+</span><span class="py">server_addr</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">x.x.x.x</span>
+<span class="w">
+</span><span class="c">; The port of the FRP server we defined as `bind_port` in the server configuration
+</span><span class="py">server_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">7000</span>
+<span class="w">
+</span><span class="nn">[web]</span><span class="w">
+</span><span class="py">type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">http</span>
+<span class="w">
+</span><span class="c">; The port of our local web server where we serve the Rails application
+</span><span class="py">local_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">80</span>
+<span class="py">custom_domains</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">example.net</span>
 </code></pre></div></div>
 
 <p>Same as on the VPS, we’ll use <code class="language-plaintext highlighter-rouge">systemd</code> to manage the FRP client. Create
 <code class="language-plaintext highlighter-rouge">/etc/systemd/system/frpc.service</code> with the following contents:</p>
 
-<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Unit]</span>
-<span class="py">Description</span> <span class="p">=</span> <span class="s">frp client</span>
-<span class="py">After</span> <span class="p">=</span> <span class="s">network.target syslog.target</span>
-<span class="py">Wants</span> <span class="p">=</span> <span class="s">network.target</span>
-
-<span class="nn">[Service]</span>
-<span class="py">Type</span> <span class="p">=</span> <span class="s">simple</span>
-<span class="py">ExecStart</span> <span class="p">=</span> <span class="s">/home/deploy/frpc -c /home/deploy/frpc.ini</span>
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Unit]</span><span class="w">
+</span><span class="py">Description</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">frp client</span>
+<span class="py">After</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">network.target syslog.target</span>
+<span class="py">Wants</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">network.target</span>
+<span class="w">
+</span><span class="nn">[Service]</span><span class="w">
+</span><span class="py">Type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">simple</span>
+<span class="py">ExecStart</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">/home/deploy/frpc -c /home/deploy/frpc.ini</span>
 <span class="py">Restart</span><span class="p">=</span><span class="s">always</span>
 <span class="py">RestartSec</span><span class="p">=</span><span class="s">3</span>
-
-<span class="nn">[Install]</span>
-<span class="py">WantedBy</span> <span class="p">=</span> <span class="s">multi-user.target</span>
+<span class="w">
+</span><span class="nn">[Install]</span><span class="w">
+</span><span class="py">WantedBy</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">multi-user.target</span>
 </code></pre></div></div>
 
 <p>Note that we use <code class="language-plaintext highlighter-rouge">frpc</code> for the client and <code class="language-plaintext highlighter-rouge">frps</code> for the server. Not that I messed them up one too
