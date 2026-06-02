@@ -28,9 +28,9 @@
 
 
     <main class="grow">
-      <div class="flex flex-col text-center">
-  <h2 class="text-3xl mb-2">Georgi Mitrev</h2>
-  <h4 class="mt-0">Welcome to my personal site</h4>
+      <div class="flex flex-col text-center my-4 md:my-8">
+  <h2 class="text-3xl mb-2 mt-0 ">Georgi Mitrev</h2>
+  <h4 class="mt-0">Welcome to my little corner of the web</h4>
 </div>
 
 <div class="toc mt-10 md:mt-16 font-display">
@@ -99,5 +99,27 @@
   <a href="https://github.com/gmitrev" rel="nofollow" target="_blank" target="_blank">Find me on Github</a>
 </footer>
 
+
+    <dialog id="lightbox" class="lightbox">
+      <img alt="">
+    </dialog>
+
+    <script>
+      // Poor man's lightbox
+      (function () {
+        const dialog = document.getElementById('lightbox');
+        const img = dialog.querySelector('img');
+
+        document.addEventListener('click', function (e) {
+          const trigger = e.target.closest('.lightbox-trigger');
+          if (!trigger) return;
+          img.src = trigger.currentSrc || trigger.src;
+          img.alt = trigger.alt;
+          dialog.showModal();
+        });
+
+        dialog.addEventListener('click', function () { dialog.close(); });
+      })();
+    </script>
   </body>
 </html>

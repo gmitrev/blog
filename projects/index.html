@@ -42,19 +42,43 @@
     <a target="_blank" href="https://stonksfolio.com"> Stonksfolio</a>
 
     <p>
-      Stonksfolio is a stock/ETF portfolio visualizer that provides insights into the performance of
+      Stonksfolio is a stock/ETF portfolio tracker that provides insights into the performance of
       your portfolios.
     </p>
 
     <p>
-      It also has an increasing number of tools that help passive investors with their investments, such
-      as an automatic contribution calculator.
+      Supports most popular brokers with an optional CSV import for others.
+    </p>
+
+    <p>Includes tools for benchmarking, rebalancing and measuring FX impact.</p>
+  </div>
+
+  <img src="/assets/images/stonks.png"
+       alt="stonks"
+       class="lightbox-trigger cursor-zoom-in" />
+</div>
+
+<div class="project">
+  <div>
+    <a target="_blank" href="https://arenabas.com">Are Na Bas</a>
+
+    <p class="text-gray-400">
+      /бас/ - a bet between two parties, a wager
+    </p>
+
+    <p>
+      A place to remember bets and wagers between friends. Never again forget about that beer you
+      are owed!
+    </p>
+
+    <p>
+
     </p>
   </div>
 
-  <a href="https://stonksfolio.com" target="_blank">
-    <img src="/assets/images/stonks.png" alt="stonks" />
-  </a>
+  <img src="/assets/images/arenabas.png"
+       alt="arenabas"
+       class="lightbox-trigger cursor-zoom-in" />
 </div>
 
 <div class="project">
@@ -69,11 +93,13 @@
       Nadir is a blazing-fast exception tracker for Ruby applications that will be there for you when
       your code fails you.
     </p>
+
+    <p>Temporarily unavailable while moving to a new hosting provider.</p>
   </div>
 
-  <a href="https://nadir.dev" target="_blank">
-    <img src="/assets/images/nadir.png" alt="nadir" />
-  </a>
+  <img src="/assets/images/nadir.png"
+       alt="nadir"
+       class="lightbox-trigger cursor-zoom-in" />
 </div>
 
 <div class="project">
@@ -91,21 +117,19 @@
     </ul>
   </div>
 
-  <a href="https://offlife.net" target="_blank">
-    <img src="/assets/images/offlife.png" alt="offlife" />
-  </a>
+  <img src="/assets/images/offlife.png"
+       alt="offlife"
+       class="lightbox-trigger cursor-zoom-in" />
 </div>
 
-<h3 class="mb-4">Libraries and other stuff</h3>
-
-<div class="library">
+<div class="library mt-4">
   <div class="flex items-center mb-2">
     <h4 class="pr-2">epaybg</h4>|
     <a target="_blank" href="https://github.com/gmitrev/epaybg" class="text-sm font-monospace pt-1 px-2">rb</a>
   </div>
 
   <p>
-    Ruby library for integrating <a target='_blank' href='epay.bg'>epay.bg</a> services.
+    Ruby library for integrating <a target='_blank' href='https://epay.bg'>epay.bg</a> services.
   </p>
 </div>
 
@@ -209,5 +233,27 @@
   <a href="https://github.com/gmitrev" rel="nofollow" target="_blank" target="_blank">Find me on Github</a>
 </footer>
 
+
+    <dialog id="lightbox" class="lightbox">
+      <img alt="">
+    </dialog>
+
+    <script>
+      // Poor man's lightbox
+      (function () {
+        const dialog = document.getElementById('lightbox');
+        const img = dialog.querySelector('img');
+
+        document.addEventListener('click', function (e) {
+          const trigger = e.target.closest('.lightbox-trigger');
+          if (!trigger) return;
+          img.src = trigger.currentSrc || trigger.src;
+          img.alt = trigger.alt;
+          dialog.showModal();
+        });
+
+        dialog.addEventListener('click', function () { dialog.close(); });
+      })();
+    </script>
   </body>
 </html>
