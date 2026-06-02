@@ -5,20 +5,16 @@ permalink: /about/
 tags: about
 ---
 
-<div class="text-center mb-8 -mt-8">
-  <a class="text-sm lowercase" href="{{ "/assets/resume.pdf" | relative_url }}" target="_blank">Resume</a>
-</div>
-
 My name is Georgi and I live in [Sofia,
 Bulgaria](https://en.wikipedia.org/wiki/Sofia){:target="_blank"}. I have been
-working as a software developer for more than 12 years and have a lot of experience in everything
+working as a software developer for more than 15 years and have a lot of experience with everything
 related to the web.
 
 I am a serial side-project creator. Check out what I'm currently working on in the
 [projects](/projects) page.
 
 My favourite programming language is Ruby and my second favourite one is Ruby. Yes, I like Ruby. I
-can do frontend and infrastructure work almost as good as I can do backend. Also, I'm looking for a
+can do frontend and infrastructure work almost as well as I can do backend. Also, I'm looking for a
 job. Check out my
   [resume]({{"/assets/resume.pdf"}}){:target="_blank"} to find out more about my work experience.
 
@@ -27,7 +23,7 @@ I
 [listen to heavy metal](https://www.last.fm/user/gosshedd){:target="_blank"} and
 [write a lot of code while doing so](https://github.com/gmitrev){:target="_blank"}.
 
-Contact me on [Twitter](https://twitter.com/gmitrev) or my email `{firstname}@{lastname}.net`.
+Contact me on my email `{firstname}@{lastname}.net`.
 
 <hr />
 

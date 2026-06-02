@@ -12,7 +12,7 @@ module.exports = {
     fontFamily: {
       heading: ['Bitter', 'Georgia', 'Cambria', '"Times New Roman"', 'serif'],
       body: ['Seravek', '"Gill Sans Nova"', 'Ubuntu', 'Calibri', '"DejaVu Sans"', 'source-sans-pro', 'sans-serif'],
-      monospace: ['ui-monospace', '"Cascadia Code"', '"Source Code Pro"', 'Menlo', 'Consolas', '"DejaVu Sans Mono"', 'monospace']
+      monospace: ['"IBM Plex Mono"', 'ui-monospace', '"Cascadia Code"', '"Source Code Pro"', 'Menlo', 'Consolas', '"DejaVu Sans Mono"', 'monospace']
     },
     extend: {
       colors: {
