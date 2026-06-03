@@ -11,3 +11,9 @@ Install gems and then run:
 ```ruby
 bundle exec jekyll serve --livereload
 ```
+
+## Create a new post
+
+```sh
+jekyll compose "Title for blog post"
+```
