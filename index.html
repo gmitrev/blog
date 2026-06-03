@@ -5,7 +5,7 @@ title: Blog
 
 <div class="flex flex-col text-center my-4 md:my-8">
   <h2 class="text-3xl mb-2 mt-0 ">Georgi Mitrev</h2>
-  <h4 class="mt-0">Welcome to my little corner of the web</h4>
+  <h3 class="mt-0 text-lg">Welcome to my little corner of the web</h3>
 </div>
 
 <div class="toc mt-10 md:mt-16 font-display">
@@ -13,7 +13,7 @@ title: Blog
     <div class="md:flex  mb-6 md:my-4 space-y-1 md:space-y-0">
       <a class="md:pr-8" href="{{ post.url | relative_url }}">{{ post.title }}</a>
 
-      <div class="font-monospace text-xs text-slate-400 md:text-right">
+      <div class="font-monospace text-xs text-slate-600 md:text-right">
         {{ post.date | date: site.date_format }}
       </div>
     </div>
