@@ -9,7 +9,7 @@
 @tailwind utilities;
 
 a {
-  @apply font-semibold text-base text-olive underline underline-offset-4 decoration-dotted hover:decoration-wavy hover:text-emerald-700
+  @apply font-semibold text-base text-olive underline underline-offset-4 decoration-dotted hover:text-emerald-700
 }
 
 header a {
