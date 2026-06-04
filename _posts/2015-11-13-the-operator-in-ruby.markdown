@@ -147,13 +147,3 @@ We can now simply use `Hash#dig` and accomplish the same thing:
 ```rb
 address = params.dig(:account, :owner, :address)
 ```
-
-<div class="border border-pink-200 p-4 pt-2 bg-rose-50 rounded text-sm">
-  <div class="text-pink-300  text-center mb-2" style="font-size: 8px">
-    <span class="text-rose-500 font-bold">[</span>
-    shameless plug
-    <span class="text-rose-500 font-bold">]</span>
-  </div>
-  Psst. Check out my latest project, <a class="text-sm" href="https://stonksfolio.com"
-    target="_blank">Stonksfolio</a>, if you need an awesome portfolio tracker!
-</div>

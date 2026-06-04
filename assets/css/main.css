@@ -1,50 +1,8 @@
 ---
 ---
 
-@import "zenburn.css";
-
-@font-face {
-  font-family: "Bitter";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/assets/fonts/bitter-v40-latin-regular.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Bitter";
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/assets/fonts/bitter-v40-latin-italic.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Bitter";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/assets/fonts/bitter-v40-latin-700.woff2") format("woff2");
-}
-@font-face {
-  font-family: "IBM Plex Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/assets/fonts/ibm-plex-mono-v20-latin-regular.woff2") format("woff2");
-}
-@font-face {
-  font-family: "IBM Plex Mono";
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("/assets/fonts/ibm-plex-mono-v20-latin-600.woff2") format("woff2");
-}
-@font-face {
-  font-family: "IBM Plex Mono";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/assets/fonts/ibm-plex-mono-v20-latin-700.woff2") format("woff2");
-}
+@import "themes/nord.css";
+@import "fonts";
 
 @tailwind base;
 @tailwind components;
@@ -86,8 +44,12 @@ p {
   @apply font-body leading-7 text-lg mb-4;
 }
 
+.highlight {
+  @apply my-2 rounded overflow-hidden shadow-lg;
+}
+
 pre {
-  @apply mb-4 rounded-md px-4 py-3 overflow-scroll text-sm;
+  @apply px-3 py-0 overflow-x-auto text-sm m-0;
 }
 
 code {
