@@ -57,7 +57,7 @@ code {
 }
 
 code.language-plaintext {
-  @apply font-monospace border border-fuchsia-200 bg-purplish py-0.5 px-1 text-xs rounded;
+  @apply font-monospace border text-fuchsia-800 border-fuchsia-300 bg-purplish py-0.5 px-1 text-xs rounded;
 }
 
 @layer components {
