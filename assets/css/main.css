@@ -9,11 +9,11 @@
 @tailwind utilities;
 
 a {
-  @apply font-semibold text-base text-olive underline underline-offset-4 decoration-dotted hover:text-emerald-700
+  @apply font-semibold text-base text-olive underline underline-offset-4 decoration-dotted hover:decoration-wavy hover:text-emerald-700
 }
 
 header a {
-  @apply font-monospace text-sm text-rose-700 hover:text-rose-800 px-3 py-2 no-underline hover:underline hover:decoration-wavy decoration-1 underline-offset-8;
+  @apply font-monospace text-sm text-rose-500 hover:text-rose-700 px-3 py-2 no-underline hover:underline hover:decoration-wavy decoration-1 underline-offset-8;
 }
 
 header a:hover {
@@ -74,7 +74,7 @@ code.language-plaintext {
   }
 
   .project a {
-    @apply font-heading text-xl mb-2 inline-block text-rose-500
+    @apply font-heading text-xl mb-2 inline-block text-rose-500 hover:text-rose-700 no-underline hover:underline hover:decoration-wavy decoration-1 underline-offset-4;
   }
 
   .project p {
