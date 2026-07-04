@@ -23,7 +23,7 @@ I
 [listen to heavy metal](https://www.last.fm/user/gosshedd){:target="_blank"} and
 [write a lot of code while doing so](https://github.com/gmitrev){:target="_blank"}.
 
-Contact me on my email `{firstname}@{lastname}.net`.
+Contact me on [Twitter](https://twitter.com/gmitrev) or my email `{firstname}@{lastname}.net`.
 
 <hr />
 

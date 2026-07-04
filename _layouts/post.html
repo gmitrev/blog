@@ -12,6 +12,14 @@ layout: default
   {{ content }}
 </article>
 
+{% assign post_url = site.url | append: page.url %}
+<div class="mt-10 text-center text-sm">
+  <a href="https://twitter.com/intent/tweet?text={{ page.title | url_encode }}&url={{ post_url | url_encode }}&via=gmitrev"
+     target="_blank" rel="nofollow noopener">
+    Discuss this post on Twitter &rarr;
+  </a>
+</div>
+
 <div class="border border-pink-200 p-4 pt-2 bg-rose-50 rounded text-sm mt-12">
   <div class="text-pink-300  text-center mb-2" style="font-size: 8px">
     <span class="text-rose-500 font-bold">[</span>
