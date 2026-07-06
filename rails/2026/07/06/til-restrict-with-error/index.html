@@ -1,4 +1,54 @@
-<p>I’ve been using Rails for 15+ years and I still find useful stuff that I didn’t know about.</p>
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>TIL: :restrict_with_error - Georgi Mitrev</title>
+
+    <meta name="description" content="TIL: :restrict_with_error">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="TIL: :restrict_with_error">
+<meta property="og:description" content="TIL: :restrict_with_error">
+<meta property="og:url" content="https://mitrev.net/rails/2026/07/06/til-restrict-with-error/">
+<meta property="og:site_name" content="Georgi Mitrev">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TIL: :restrict_with_error">
+<meta name="twitter:description" content="TIL: :restrict_with_error">
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+
+    <link rel="preload" href="/assets/fonts/bitter-v40-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/ibm-plex-mono-v20-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script async="" data-website-id="f7e00ced-3f46-4ba8-b750-9d8e8b0ef5eb" defer="" src="https://analytics.nadir.dev/script.js" /></script>
+  </head>
+  <body class="bg-cream mx-8 lg:mx-auto lg:w-full lg:max-w-2xl flex flex-col h-screen">
+    <header class="mt-6 mb-10 flex items-center justify-between">
+  <a href="/" class="home">/</a>
+
+  <nav class="flex space-x-6">
+    <a href="/projects">/projects</a>
+    <a href="/about">/about</a>
+  </nav>
+</header>
+
+
+    <main class="grow">
+      <div class="my-8 text-center">
+  <h1>TIL: :restrict_with_error</h1>
+
+  <div class="font-monospace text-xs text-slate-600 mt-4">Jul 6, 2026</div>
+</div>
+
+<article class="mt-6 grow">
+  <p>I’ve been using Rails for 15+ years and I still find useful stuff that I didn’t know about.</p>
 
 <p>This week, my discovery is the <code class="language-plaintext highlighter-rouge">restrict_with_error</code> option for the <code class="language-plaintext highlighter-rouge">has_one</code> and <code class="language-plaintext highlighter-rouge">has_many</code>
 <code class="language-plaintext highlighter-rouge">:dependent</code> setting.</p>
@@ -50,3 +100,53 @@ it from being deleted. This is now baked into the <code class="language-plaintex
 
 <p>There’s also <code class="language-plaintext highlighter-rouge">:restrict_with_exception</code>, which raises an exception instead of adding validation
 errors to the object.</p>
+
+</article>
+
+
+<div class="mt-10 text-center text-sm">
+  <a href="https://twitter.com/intent/tweet?text=TIL%3A+%3Arestrict_with_error&amp;url=https%3A%2F%2Fmitrev.net%2Frails%2F2026%2F07%2F06%2Ftil-restrict-with-error%2F&amp;via=gmitrev" target="_blank" rel="nofollow noopener noopener noreferrer">
+    Discuss this post on Twitter →
+  </a>
+</div>
+
+<div class="border border-pink-200 p-4 pt-2 bg-rose-50 rounded text-sm mt-12">
+  <div class="text-pink-300  text-center mb-2" style="font-size: 8px">
+    <span class="text-rose-500 font-bold">[</span>
+    shameless plug
+    <span class="text-rose-500 font-bold">]</span>
+  </div>
+  Psst. Check out my latest project, <a class="text-sm" href="https://stonksfolio.com" target="_blank" rel="noopener noreferrer">Stonksfolio</a>, if you need an awesome portfolio tracker!
+</div>
+
+    </main>
+
+    <footer class="text-center mt-10 pb-10 flex justify-center gap-6 ">
+  <a href="https://twitter.com/gmitrev" rel="nofollow noopener noreferrer" target="_blank">Twitter</a>
+  <a href="https://github.com/gmitrev" rel="nofollow noopener noreferrer" target="_blank">Github</a>
+</footer>
+
+
+    <dialog id="lightbox" class="lightbox">
+      <img alt="">
+    </dialog>
+
+    <script>
+      // Poor man's lightbox
+      (function () {
+        const dialog = document.getElementById('lightbox');
+        const img = dialog.querySelector('img');
+
+        document.addEventListener('click', function (e) {
+          const trigger = e.target.closest('.lightbox-trigger');
+          if (!trigger) return;
+          img.src = trigger.currentSrc || trigger.src;
+          img.alt = trigger.alt;
+          dialog.showModal();
+        });
+
+        dialog.addEventListener('click', function () { dialog.close(); });
+      })();
+    </script>
+  </body>
+</html>
