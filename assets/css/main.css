@@ -41,7 +41,7 @@ h4 {
 }
 
 p {
-  @apply font-body leading-7 text-lg mb-4;
+  @apply leading-7 text-lg mb-4;
 }
 
 .highlight {
@@ -105,5 +105,13 @@ code.language-plaintext {
     @apply block cursor-zoom-out;
     max-width: 90vw;
     max-height: 90vh;
+  }
+
+  .note {
+    @apply bg-amber-100 border-l-4 border-amber-400 text-base p-4 rounded-lg mb-4 leading-7;
+
+    p, a, code {
+      @apply text-base leading-7 m-0;
+    }
   }
 }

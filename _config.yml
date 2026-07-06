@@ -9,6 +9,7 @@ permalink:    pretty
 
 plugins:
   - jekyll-postcss
+  - jekyll-target-blank
 
 postcss:
   cache: false
