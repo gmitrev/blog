@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Streaming uploads to S3 in Ruby/Rails - Georgi Mitrev</title>
+
+    <meta name="description" content="Streaming uploads to S3 in Ruby/Rails">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Streaming uploads to S3 in Ruby/Rails">
+<meta property="og:description" content="Streaming uploads to S3 in Ruby/Rails">
+<meta property="og:url" content="https://mitrev.net/ruby/2026/07/01/streaming-uploads-to-s3-in-ruby-rails/">
+<meta property="og:site_name" content="Georgi Mitrev">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Streaming uploads to S3 in Ruby/Rails">
+<meta name="twitter:description" content="Streaming uploads to S3 in Ruby/Rails">
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+
+    <link rel="preload" href="/assets/fonts/bitter-v40-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/ibm-plex-mono-v20-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script async="" data-website-id="f7e00ced-3f46-4ba8-b750-9d8e8b0ef5eb" defer="" src="https://analytics.nadir.dev/script.js" /></script>
+  </head>
+  <body class="bg-cream mx-8 lg:mx-auto lg:w-full lg:max-w-2xl flex flex-col h-screen">
+    <header class="mt-6 mb-10 flex items-center justify-between">
+  <a href="/" class="home">/</a>
+
+  <nav class="flex space-x-6">
+    <a href="/projects">/projects</a>
+    <a href="/about">/about</a>
+  </nav>
+</header>
+
+
+    <main class="grow">
+      <div class="my-8 text-center">
+  <h1>Streaming uploads to S3 in Ruby/Rails</h1>
+
+  <div class="font-monospace text-xs text-slate-600 mt-4">Jul 1, 2026</div>
+</div>
+
+<article class="mt-6 grow">
+  <p>When I started working on <code class="language-plaintext highlighter-rouge">noop-backup</code>, I wanted to make the process of backing up a PostgreSQL
+database as frictionless as possible. In my vision, all you had to do was execute <code class="language-plaintext highlighter-rouge">bundle add
+noop-backup</code>, provide an S3 bucket and AWS credentials and maybe setup a slack webhook. Backups
+would then be executed in a background worker or manually with a cron.</p>
+
+<p>This means that, ideally, the executor would not dump a huge database on the filesystem where it
+happens to run - databases tend to be pretty large and this can cause a lot of issues. Instead of
+dumping the database and then uploading it to S3 and then deleting it, I decided to look into a
+different way of doing it - streaming directly from <code class="language-plaintext highlighter-rouge">pg_dump</code> into <code class="language-plaintext highlighter-rouge">S3</code> without touching the disk
+at all.</p>
+
+<h3 id="naive-implementation">Naive implementation</h3>
+
+<p>The input in our example will come out of <code class="language-plaintext highlighter-rouge">pg_dump</code>:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pg_dump database_name
+</code></pre></div></div>
+
+<p>This just dumps out the database to <code class="language-plaintext highlighter-rouge">stdout</code>. We can capture it in Ruby by using the <code class="language-plaintext highlighter-rouge">Open3</code>
+module:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'open3'</span>
+
+<span class="n">stdin</span><span class="p">,</span> <span class="n">pg_dump_out</span> <span class="o">=</span> <span class="no">Open3</span><span class="p">.</span><span class="nf">popen2</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">stdin</code> and <code class="language-plaintext highlighter-rouge">pg_dump_out</code> are instances of the <a href="https://docs.ruby-lang.org/en/master/IO.html" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">IO</code>
+class</a>, which implements input/output streams on the
+operating system level. If you’ve used the <a href="https://docs.ruby-lang.org/en/master/File.html" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">File</code></a>
+class, you should be familiar with <code class="language-plaintext highlighter-rouge">IO</code> as <code class="language-plaintext highlighter-rouge">File</code> is based on it.</p>
+
+<p>Now that we have captured the pg_dump output stream, we need to redirect it to S3. Using the
+official AWS SDK for Ruby, this is fairly easy. First, we need to build an <code class="language-plaintext highlighter-rouge">S3::Client</code> object:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"aws-sdk-s3"</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
+  <span class="ss">region:            </span><span class="s1">'eu-west-1'</span><span class="p">,</span>
+  <span class="ss">access_key_id:     </span><span class="no">ENV</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="s2">"AWS_ACCESS_KEY_ID"</span><span class="p">),</span>
+  <span class="ss">secret_access_key: </span><span class="no">ENV</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="s2">"AWS_SECRET_ACCESS_KEY"</span><span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>We’ll then use the <a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/TransferManager.html" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">TransferManager</code> class</a> to upload the stream.</p>
+
+<div class="note">
+  <p>In older SDK versions, we’d actually use <a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#upload_stream-instance_method" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">Aws::S3::Object#upload_stream</code> </a>, and you’ll see most guides use this. This method is, however, deprecated in the latest SDK and it is recommended to use <code class="language-plaintext highlighter-rouge">TransferManager</code>.</p>
+</div>
+
+<p>We’ll use
+<a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/TransferManager.html#upload_stream-instance_method" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">Aws::S3::TransferManager#upload_stream</code></a>
+to get an <code class="language-plaintext highlighter-rouge">IO</code> stream for writing to S3 and then we’ll use
+<a href="https://docs.ruby-lang.org/en/master/IO.html#method-c-copy_stream" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">IO.copy_stream</code></a> to do the
+actual copying. <code class="language-plaintext highlighter-rouge">IO.copy_stream</code> returns the number of bytes written, if this is needed.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">client</span> <span class="o">=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">transfer_manager</span> <span class="o">=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">TransferManager</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">client</span><span class="p">:)</span>
+
+<span class="n">stdin</span><span class="p">,</span> <span class="n">pg_dump_out</span> <span class="o">=</span> <span class="no">Open3</span><span class="p">.</span><span class="nf">popen2</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span>
+
+<span class="n">transfer_manager</span><span class="p">.</span><span class="nf">upload_stream</span><span class="p">(</span><span class="ss">bucket: </span><span class="s1">'bucket-name'</span><span class="p">,</span> <span class="ss">key: </span><span class="s1">'2026/06/06.dump'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">s3_stream</span><span class="o">|</span>
+  <span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">pg_dump_out</span><span class="p">,</span> <span class="n">s3_stream</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This will work but it has several issues. For one, if <code class="language-plaintext highlighter-rouge">pg_dump</code> fails midway, we’ll end up
+uploading a corrupted file without knowing it has been corrupted.</p>
+
+<h3 id="gotcha-1---checking-for-errors">Gotcha 1 - checking for errors</h3>
+
+<p><code class="language-plaintext highlighter-rouge">Open3.popen2</code> actually returns three objects: the two streams and a wait thread. We can probe the
+wait thread to check the exit code of the command:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">stdin</span><span class="p">,</span> <span class="n">pg_dump_out</span><span class="p">,</span> <span class="n">wait_thread</span> <span class="o">=</span> <span class="no">Open3</span><span class="p">.</span><span class="nf">popen2</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span>
+<span class="n">stdin</span><span class="p">.</span><span class="nf">close</span>
+
+<span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">pg_dump_out</span><span class="p">,</span> <span class="no">File</span><span class="o">::</span><span class="no">NULL</span><span class="p">)</span> <span class="c1"># pg_dump sleeps until its output is consumed</span>
+<span class="c1"># Without consuming the output, the code below will hang forever</span>
+
+<span class="n">wait_thread</span><span class="p">.</span><span class="nf">class</span>          <span class="c1"># =&gt; Process::Waiter</span>
+<span class="n">wait_thread</span><span class="p">.</span><span class="nf">value</span>          <span class="c1"># =&gt; #&lt;Process::Status: pid 41357 exit 0&gt;</span>
+<span class="n">wait_thread</span><span class="p">.</span><span class="nf">value</span><span class="p">.</span><span class="nf">success?</span> <span class="c1"># =&gt; true</span>
+</code></pre></div></div>
+
+<p>If the exit code is not success, make sure to clean up any partially uploaded files.</p>
+
+<h3 id="gotcha-2---forgetting-to-close-input-stream">Gotcha 2 - forgetting to close input stream</h3>
+
+<p>If you forget to call <code class="language-plaintext highlighter-rouge">stdin.close</code>, the fd will leak and can potentially stay alive for a long
+time (until a GC cycle or process exit). <code class="language-plaintext highlighter-rouge">pg_dump</code> never reads stdin, so here the unclosed pipe is
+only a leaked fd. But for a child that reads stdin (e.g. <code class="language-plaintext highlighter-rouge">psql</code> when you stream a restore), a
+forgotten <code class="language-plaintext highlighter-rouge">stdin.close</code> means it waits for EOF forever.</p>
+
+<p>A possible solution is to use <code class="language-plaintext highlighter-rouge">popen2</code> with a block. After the block executes, all streams are closed:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Open3</span><span class="p">.</span><span class="nf">popen2</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">stdin</span><span class="p">,</span> <span class="n">pg_dump_out</span><span class="p">,</span> <span class="n">wait_thread</span><span class="o">|</span>
+  <span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">pg_dump_out</span><span class="p">,</span> <span class="no">File</span><span class="o">::</span><span class="no">NULL</span><span class="p">)</span>
+
+  <span class="k">raise</span> <span class="k">unless</span> <span class="n">wait_thread</span><span class="p">.</span><span class="nf">value</span><span class="p">.</span><span class="nf">success?</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="gotcha-3---handling-stderr">Gotcha 3 - handling stderr</h3>
+
+<p>One drawback of <code class="language-plaintext highlighter-rouge">popen2</code> is that it doesn’t yield access to <code class="language-plaintext highlighter-rouge">stderr</code>. We can use <code class="language-plaintext highlighter-rouge">popen2e</code> but it
+merges <code class="language-plaintext highlighter-rouge">stderr</code> and <code class="language-plaintext highlighter-rouge">stdout</code>. As a result, any potential warnings would be added to the database dump. Oops.
+Alternatively, we could use <code class="language-plaintext highlighter-rouge">popen3</code> which yields <code class="language-plaintext highlighter-rouge">stderr</code> as a standalone object:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Open3</span><span class="p">.</span><span class="nf">popen3</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">wait_thread</span><span class="o">|</span>
+  <span class="n">transfer_manager</span><span class="p">.</span><span class="nf">upload_stream</span><span class="p">(</span><span class="n">bucket</span><span class="p">:,</span> <span class="n">key</span><span class="p">:)</span> <span class="k">do</span> <span class="o">|</span><span class="n">s3_stream</span><span class="o">|</span>
+    <span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">s3_stream</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">raise</span> <span class="s2">"pg_dump failed: </span><span class="si">#{</span><span class="n">stderr</span><span class="p">.</span><span class="nf">read</span><span class="si">}</span><span class="s2">"</span> <span class="k">unless</span> <span class="n">wait_thread</span><span class="p">.</span><span class="nf">value</span><span class="p">.</span><span class="nf">success?</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This snippet suffers from a fatal flaw - a deadlock. We now have two pipes and one main thread, and
+<code class="language-plaintext highlighter-rouge">pg_dump</code> is writing into both pipes at the same time. Each pipe’s buffer is ~64 KB and if
+<code class="language-plaintext highlighter-rouge">stderr</code>’s buffer fills before the <code class="language-plaintext highlighter-rouge">IO.copy_stream</code> command completes, <code class="language-plaintext highlighter-rouge">pg_dump</code> will block until
+<code class="language-plaintext highlighter-rouge">stderr</code> is consumed, but this doesn’t happen until we finish uploading.</p>
+
+<p>What we can do is consume <code class="language-plaintext highlighter-rouge">stderr</code> in a new thread so we can avoid a deadlock:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Open3</span><span class="p">.</span><span class="nf">popen3</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">wait_thread</span><span class="o">|</span>
+  <span class="n">error_thread</span> <span class="o">=</span> <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span> <span class="p">{</span> <span class="n">stderr</span><span class="p">.</span><span class="nf">read</span> <span class="p">}</span>
+
+  <span class="n">transfer_manager</span><span class="p">.</span><span class="nf">upload_stream</span><span class="p">(</span><span class="n">bucket</span><span class="p">:,</span> <span class="n">key</span><span class="p">:)</span> <span class="k">do</span> <span class="o">|</span><span class="n">s3_stream</span><span class="o">|</span>
+    <span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">s3_stream</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">raise</span> <span class="s2">"pg_dump failed: </span><span class="si">#{</span><span class="n">error_thread</span><span class="p">.</span><span class="nf">value</span><span class="si">}</span><span class="s2">"</span> <span class="k">unless</span> <span class="n">wait_thread</span><span class="p">.</span><span class="nf">value</span><span class="p">.</span><span class="nf">success?</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="gotcha-4---aws-s3-and-multipart-upload-limits">Gotcha 4 - AWS S3 and multipart upload limits</h3>
+
+<p>Looking at the documentation for
+<a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/TransferManager.html#upload_stream-instance_method" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">upload_stream</code></a>
+reveals two options that are crucial when using this for large files:</p>
+
+<p><code class="language-plaintext highlighter-rouge">part_size</code> - default 5MiB (5 * 1024 * 1024) - This directly caps the maximum size of the
+uploaded file because <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html" target="_blank" rel="noopener noreferrer">S3 supports maximum 10 000 parts per
+upload</a>. With the default part
+size, we could upload a file up to 48.8 GiB. After the 10000th part, S3 will simply reject further
+<code class="language-plaintext highlighter-rouge">UploadPart</code> calls and the upload will fail. Max <code class="language-plaintext highlighter-rouge">part_size</code> is <code class="language-plaintext highlighter-rouge">5 GiB</code> which caps the actual max
+file size to <code class="language-plaintext highlighter-rouge">48.8 TiB</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">thread_count</code> - default 10 - Number of parallel multipart uploads. Directly contributes to memory
+usage. Peak memory is roughly <code class="language-plaintext highlighter-rouge">thread_count</code> * <code class="language-plaintext highlighter-rouge">part_size</code>. For the default (10 threads x 5MB)
+expect around 50-60MB memory usage.</p>
+
+<h3 id="full-example">Full example</h3>
+
+<p>With all gotchas taken into account, this is what the complete code looks like:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'open3'</span>
+<span class="nb">require</span> <span class="s1">'aws-sdk-s3'</span>
+
+<span class="n">bucket</span> <span class="o">=</span> <span class="s1">'bucket-name'</span>
+<span class="n">key</span> <span class="o">=</span> <span class="s1">'2026/06/06.dump'</span>
+<span class="n">client</span> <span class="o">=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">transfer_manager</span> <span class="o">=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">TransferManager</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">client</span><span class="p">:)</span>
+
+<span class="no">Open3</span><span class="p">.</span><span class="nf">popen3</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">_</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">wait_thread</span><span class="o">|</span>
+  <span class="n">error_thread</span> <span class="o">=</span> <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span> <span class="p">{</span> <span class="n">stderr</span><span class="p">.</span><span class="nf">read</span> <span class="p">}</span>
+  <span class="n">bytes</span> <span class="o">=</span> <span class="mi">0</span>
+
+  <span class="n">transfer_manager</span><span class="p">.</span><span class="nf">upload_stream</span><span class="p">(</span><span class="n">bucket</span><span class="p">:,</span> <span class="n">key</span><span class="p">:,</span> <span class="ss">part_size: </span><span class="mi">128</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span> <span class="ss">thread_count: </span><span class="mi">4</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">s3_stream</span><span class="o">|</span>
+    <span class="n">bytes</span> <span class="o">=</span> <span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">s3_stream</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">raise</span> <span class="no">CustomError</span><span class="p">,</span> <span class="s2">"pg_dump failed: </span><span class="si">#{</span><span class="n">error_thread</span><span class="p">.</span><span class="nf">value</span><span class="si">}</span><span class="s2">"</span> <span class="k">unless</span> <span class="n">wait_thread</span><span class="p">.</span><span class="nf">value</span><span class="p">.</span><span class="nf">success?</span>
+
+  <span class="nb">puts</span> <span class="s2">"Uploaded </span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="n">bucket</span><span class="si">}</span><span class="s2">. Final size: </span><span class="si">#{</span><span class="n">bytes</span><span class="si">}</span><span class="s2">b"</span>
+<span class="k">rescue</span> <span class="no">CustomError</span> <span class="o">=&gt;</span> <span class="n">e</span>
+  <span class="n">client</span><span class="p">.</span><span class="nf">delete_object</span><span class="p">(</span><span class="n">bucket</span><span class="p">:,</span> <span class="n">key</span><span class="p">:)</span>
+  <span class="c1"># possibly re-raise or alert</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="advanced-progress-reporting">Advanced: progress reporting</h3>
+
+<p>With big files, it can take a while until they are uploaded. This is why having a simple progress
+indicator goes a long way. I like using <a href="https://linux.die.net/man/1/pv" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">pv</code></a> in similar
+situations. Output can be piped into it and it will pipe it out while providing some visibility
+into the progress:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pg_dump large_database | pv <span class="nt">-btra</span> <span class="o">&gt;</span> dump.sql
+<span class="c"># =&gt; 1.46GiB 0:00:15 [99.2MiB/s] (99.2MiB/s)</span>
+</code></pre></div></div>
+
+<p>This is a bit awkward to do with just <code class="language-plaintext highlighter-rouge">popen3</code> but we can use another method provided by <code class="language-plaintext highlighter-rouge">Open3</code> -
+<a href="https://docs.ruby-lang.org/en/master/Open3.html#method-i-pipeline_r" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">pipeline_r</code></a>. This is the
+bigger brother of <a href="https://docs.ruby-lang.org/en/master/Open3.html#method-i-pipeline" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">pipeline</code></a>,
+which receives a list of command and pipes them similar the shell example above. <code class="language-plaintext highlighter-rouge">pipeline</code> returns
+an array with the process status objects of each command in the list and prints everything to stdout:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">statuses</span> <span class="o">=</span> <span class="no">Open3</span><span class="p">.</span><span class="nf">pipeline</span><span class="p">(</span><span class="s1">'ls'</span><span class="p">,</span> <span class="s1">'grep R'</span><span class="p">)</span>
+<span class="n">statuses</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:success?</span><span class="p">)</span>
+<span class="c1"># =&gt; [true, true]</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">pipeline_r</code> also yields the captured stdout of the last command in the list:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Open3</span><span class="p">.</span><span class="nf">pipeline_r</span><span class="p">(</span><span class="s1">'ls'</span><span class="p">,</span> <span class="s1">'grep R'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">last_stdout</span><span class="p">,</span> <span class="n">wait_threads</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="n">last_stdout</span><span class="p">.</span><span class="nf">read</span>
+<span class="k">end</span>
+<span class="c1"># =&gt; Rakefile</span>
+<span class="c1"># =&gt; README.md</span>
+</code></pre></div></div>
+
+<p>We can use it to pipe <code class="language-plaintext highlighter-rouge">pg_dump</code> into <code class="language-plaintext highlighter-rouge">pv</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">commands</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">[</span><span class="s2">"pg_dump"</span><span class="p">,</span> <span class="s2">"db_name"</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"pv"</span><span class="p">,</span> <span class="s2">"-btra"</span><span class="p">]</span>
+<span class="p">]</span>
+
+<span class="no">Open3</span><span class="p">.</span><span class="nf">pipeline_r</span><span class="p">(</span><span class="o">*</span><span class="n">commands</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">dump_out</span><span class="p">,</span> <span class="n">wait_threads</span><span class="o">|</span>
+  <span class="n">transfer_manager</span><span class="p">.</span><span class="nf">upload_stream</span><span class="p">(</span><span class="n">bucket</span><span class="p">:,</span> <span class="n">key</span><span class="p">:)</span> <span class="k">do</span> <span class="o">|</span><span class="n">s3_stream</span><span class="o">|</span>
+    <span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">dump_out</span><span class="p">,</span> <span class="n">s3_stream</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">raise</span> <span class="s2">"pipeline failed"</span> <span class="k">unless</span> <span class="n">wait_threads</span><span class="p">.</span><span class="nf">all?</span> <span class="p">{</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span> <span class="n">t</span><span class="p">.</span><span class="nf">value</span><span class="p">.</span><span class="nf">success?</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The result will be the same but we’ll get a nice looking progress indicator while the file is being
+uploaded.</p>
+
+<p>This approach is also very useful if, for example, we want to encrypt the file with <code class="language-plaintext highlighter-rouge">openssl</code>
+before upload.</p>
+
+
+</article>
+
+
+<div class="mt-10 text-center text-sm">
+  <a href="https://twitter.com/intent/tweet?text=Streaming+uploads+to+S3+in+Ruby%2FRails&amp;url=https%3A%2F%2Fmitrev.net%2Fruby%2F2026%2F07%2F01%2Fstreaming-uploads-to-s3-in-ruby-rails%2F&amp;via=gmitrev" target="_blank" rel="nofollow noopener noopener noreferrer">
+    Discuss this post on Twitter →
+  </a>
+</div>
+
+<div class="border border-pink-200 p-4 pt-2 bg-rose-50 rounded text-sm mt-12">
+  <div class="text-pink-300  text-center mb-2" style="font-size: 8px">
+    <span class="text-rose-500 font-bold">[</span>
+    shameless plug
+    <span class="text-rose-500 font-bold">]</span>
+  </div>
+  Psst. Check out my latest project, <a class="text-sm" href="https://stonksfolio.com" target="_blank" rel="noopener noreferrer">Stonksfolio</a>, if you need an awesome portfolio tracker!
+</div>
+
+    </main>
+
+    <footer class="text-center mt-10 pb-10 flex justify-center gap-6 ">
+  <a href="https://twitter.com/gmitrev" rel="nofollow noopener noreferrer" target="_blank">Twitter</a>
+  <a href="https://github.com/gmitrev" rel="nofollow noopener noreferrer" target="_blank">Github</a>
+</footer>
+
+
+    <dialog id="lightbox" class="lightbox">
+      <img alt="">
+    </dialog>
+
+    <script>
+      // Poor man's lightbox
+      (function () {
+        const dialog = document.getElementById('lightbox');
+        const img = dialog.querySelector('img');
+
+        document.addEventListener('click', function (e) {
+          const trigger = e.target.closest('.lightbox-trigger');
+          if (!trigger) return;
+          img.src = trigger.currentSrc || trigger.src;
+          img.alt = trigger.alt;
+          dialog.showModal();
+        });
+
+        dialog.addEventListener('click', function () { dialog.close(); });
+      })();
+    </script>
+  </body>
+</html>

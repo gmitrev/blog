@@ -1,0 +1,52 @@
+<p>I’ve been using Rails for 15+ years and I still find useful stuff that I didn’t know about.</p>
+
+<p>This week, my discovery is the <code class="language-plaintext highlighter-rouge">restrict_with_error</code> option for the <code class="language-plaintext highlighter-rouge">has_one</code> and <code class="language-plaintext highlighter-rouge">has_many</code>
+<code class="language-plaintext highlighter-rouge">:dependent</code> setting.</p>
+
+<h2 id="example">Example</h2>
+
+<p>I developed a tiny workout tracking application which has an <code class="language-plaintext highlighter-rouge">Exercise</code> model. This is stuff like
+<code class="language-plaintext highlighter-rouge">Squat</code> or <code class="language-plaintext highlighter-rouge">Deadlift</code>. Every workout session consists of multiple <code class="language-plaintext highlighter-rouge">WorkoutExercise</code> objects,
+which record a concrete session of that <code class="language-plaintext highlighter-rouge">Exercise</code> being used in a workout.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">WorkoutExercise</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">belongs_to</span> <span class="ss">:workout</span>
+
+  <span class="n">has_many</span> <span class="ss">:sets</span> <span class="c1"># and sets have reps</span>
+<span class="k">end</span>
+
+</code></pre></div></div>
+
+<p>The question is what happens when I decide to delete an <code class="language-plaintext highlighter-rouge">Exercise</code>. Previously, I would manually
+write a <code class="language-plaintext highlighter-rouge">before_destroy</code> callback to check if an <code class="language-plaintext highlighter-rouge">Exercise</code> has been used in any workouts and prevent
+it from being deleted. This is now baked into the <code class="language-plaintext highlighter-rouge">has_one</code> and <code class="language-plaintext highlighter-rouge">has_many</code> methods by using the
+<code class="language-plaintext highlighter-rouge">dependent</code> option as follows:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Exercise</span>
+  <span class="n">has_many</span> <span class="ss">:workout_exercises</span><span class="p">,</span> <span class="ss">dependent: :restrict_with_error</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>With this, attempting to delete an exercise that is already referenced by exiting Workouts shows a nice error on the <code class="language-plaintext highlighter-rouge">exercise</code> object:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">e</span> <span class="o">=</span> <span class="no">Exercise</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># =&gt; #&lt;Exercise:0x0000000109d4ded8&gt;</span>
+
+<span class="n">e</span><span class="p">.</span><span class="nf">name</span>
+<span class="c1"># =&gt; "Squat"</span>
+
+<span class="n">e</span><span class="p">.</span><span class="nf">destroy</span>
+<span class="c1"># =&gt; false</span>
+
+<span class="n">e</span><span class="p">.</span><span class="nf">errors</span>
+<span class="c1"># =&gt; #&lt;ActiveModel::Errors [#&lt;ActiveModel::Error attribute=base, type=restrict_dependent_destroy.has_many, options={:record=&gt;"workout exercises"}&gt;]&gt;</span>
+
+<span class="n">e</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">full_messages</span>
+<span class="c1"># =&gt; ["Cannot delete record because dependent workout exercises exist"]</span>
+</code></pre></div></div>
+
+<p>This is much nicer and elegant than having to roll a custom validation.</p>
+
+<p>There’s also <code class="language-plaintext highlighter-rouge">:restrict_with_exception</code>, which raises an exception instead of adding validation
+errors to the object.</p>
