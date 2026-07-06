@@ -69,8 +69,8 @@ which record a concrete session of that <code class="language-plaintext highligh
 
 <p>The question is what happens when I decide to delete an <code class="language-plaintext highlighter-rouge">Exercise</code>. Previously, I would manually
 write a <code class="language-plaintext highlighter-rouge">before_destroy</code> callback to check if an <code class="language-plaintext highlighter-rouge">Exercise</code> has been used in any workouts and prevent
-it from being deleted. This is now baked into the <code class="language-plaintext highlighter-rouge">has_one</code> and <code class="language-plaintext highlighter-rouge">has_many</code> methods by using the
-<code class="language-plaintext highlighter-rouge">dependent</code> option as follows:</p>
+it from being deleted. Turns out this has been  baked into the <code class="language-plaintext highlighter-rouge">has_one</code>
+and <code class="language-plaintext highlighter-rouge">has_many</code> methods ever since Rails 4 in 2013:</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Exercise</span>
   <span class="n">has_many</span> <span class="ss">:workout_exercises</span><span class="p">,</span> <span class="ss">dependent: :restrict_with_error</span>
