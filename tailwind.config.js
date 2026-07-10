@@ -11,7 +11,7 @@ module.exports = {
   theme: {
     fontFamily: {
       heading: ['Bitter', 'Georgia', 'Cambria', '"Times New Roman"', 'serif'],
-      body: ['Seravek', '"Gill Sans Nova"', 'Ubuntu', 'Calibri', '"DejaVu Sans"', 'source-sans-pro', 'sans-serif'],
+      sans: ['Seravek', '"Gill Sans Nova"', 'Ubuntu', 'Calibri', '"DejaVu Sans"', 'source-sans-pro', 'sans-serif'],
       monospace: ['"IBM Plex Mono"', 'ui-monospace', '"Cascadia Code"', '"Source Code Pro"', 'Menlo', 'Consolas', '"DejaVu Sans Mono"', 'monospace']
     },
     extend: {
