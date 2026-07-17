@@ -6,10 +6,10 @@ categories: ruby
 published: false
 ---
 
-When I started working on `noop-backup`, I wanted to make the process of backing up a PostgreSQL
-database as frictionless as possible. In my vision, all you had to do was execute `bundle add
-noop-backup`, provide an S3 bucket and AWS credentials and maybe setup a slack webhook. Backups
-would then be executed in a background worker or manually with a cron.
+When I started working on [boring-backup](https://boringbackup.com), I wanted to make the process
+of backing up a PostgreSQL database as frictionless as possible. In my vision, all you had to do
+was execute `bundle add boring-backup`, provide an S3 bucket and AWS credentials and maybe setup a
+slack webhook. Backups would then be executed in a background worker or manually with a cron.
 
 This means that, ideally, the executor would not dump a huge database on the filesystem where it
 happens to run - databases tend to be pretty large and this can cause a lot of issues. Instead of
@@ -87,8 +87,8 @@ wait thread to check the exit code of the command:
 stdin, pg_dump_out, wait_thread = Open3.popen2('pg_dump db_name')
 stdin.close
 
-IO.copy_stream(pg_dump_out, File::NULL) # pg_dump sleeps until its output is consumed
-# Without consuming the output, the code below will hang forever
+IO.copy_stream(pg_dump_out, File::NULL) # pg_dump blocks once the pipe buffer (~64 KB) fills
+# Without consuming the output, the code below will hang forever for any non-trivial dump
 
 wait_thread.class          # => Process::Waiter
 wait_thread.value          # => #<Process::Status: pid 41357 exit 0>
@@ -104,7 +104,9 @@ time (until a GC cycle or process exit). `pg_dump` never reads stdin, so here th
 only a leaked fd. But for a child that reads stdin (e.g. `psql` when you stream a restore), a
 forgotten `stdin.close` means it waits for EOF forever.
 
-A possible solution is to use `popen2` with a block. After the block executes, all streams are closed:
+A possible solution is to use `popen2` with a block. After the block executes, all streams are
+closed. Note this only prevents the fd leak — the streams are closed *after* the block runs, so for
+a child that reads stdin you'd still need an explicit `stdin.close` inside the block:
 
 ```rb
 Open3.popen2('pg_dump db_name') do |stdin, pg_dump_out, wait_thread|
@@ -174,6 +176,8 @@ With all gotchas taken into account, this is what the complete code looks like:
 require 'open3'
 require 'aws-sdk-s3'
 
+CustomError = Class.new(StandardError)
+
 bucket = 'bucket-name'
 key = '2026/06/06.dump'
 client = Aws::S3::Client.new(...)
@@ -189,7 +193,7 @@ Open3.popen3('pg_dump db_name') do |_, stdout, stderr, wait_thread|
 
   raise CustomError, "pg_dump failed: #{error_thread.value}" unless wait_thread.value.success?
 
-  puts "Uploaded #{key} to #{bucket}. Final size: #{bytes}b"
+  puts "Uploaded #{key} to #{bucket}. Final size: #{bytes} bytes"
 rescue CustomError => e
   client.delete_object(bucket:, key:)
   # possibly re-raise or alert
