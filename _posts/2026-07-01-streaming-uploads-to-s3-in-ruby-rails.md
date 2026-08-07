@@ -1,9 +1,9 @@
 ---
 layout: post
 title: Streaming uploads to S3 in Ruby/Rails
-date: 2026-07-01 18:16 +0300
+date: 2026-08-07 18:16 +0300
 categories: ruby
-published: false
+published: true
 ---
 
 When I started working on [boring-backup](https://boringbackup.com), I wanted to make the process
@@ -256,5 +256,3 @@ uploaded.
 
 This approach is also very useful if, for example, we want to encrypt the file with `openssl`
 before upload.
-
-
