@@ -102,7 +102,7 @@ code.language-plaintext {
   }
 
   .lightbox img {
-    @apply block cursor-zoom-out;
+    @apply block hover:cursor-pointer;
     max-width: 90vw;
     max-height: 90vh;
   }
