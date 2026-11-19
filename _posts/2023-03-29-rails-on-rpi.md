@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Running a Rails app from your home
+description: "How to run a Rails app on a Raspberry Pi at home and expose it to the internet through a VPS with FRP."
 summary: How to run a Rails application on RaspberryPI and expose it to the internet
 date: 2023-03-29 18:03
 categories: ruby

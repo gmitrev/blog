@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Benchmarking Ruby
+description: "How to measure and compare Ruby code with the standard Benchmark module and the benchmark-ips gem."
 summary: How to benchmark ruby code and compare different solutions to a problem
 date: 2015-08-28
 published: true

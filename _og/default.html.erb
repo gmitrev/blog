@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="<%= h(lang) %>">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="card.css">
+</head>
+<body>
+<div class="card">
+  <div class="top mono">
+    <span class="byline">Georgi Mitrev's blog</span>
+    <span class="meta"><%= h([category, date.strftime("%d.%m.%Y")].compact.join(" · ")) %></span>
+  </div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 28px">
+    <h1 style="font-size: <%= title.length > 45 ? 60 : 76 %>px; max-width: 1000px"><%= h(title) %></h1>
+    <% if description %>
+    <div class="description"><%= h(description) %></div>
+    <% end %>
+  </div>
+  <div class="footer mono"><span class="brand">https://mitrev.net</span></div>
+</div>
+</body>
+</html>

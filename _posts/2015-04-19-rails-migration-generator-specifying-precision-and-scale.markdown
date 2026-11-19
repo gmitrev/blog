@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Rails migration generator - how to specify decimal precision and scale
+description: "How to set decimal precision and scale with the Rails migration generator, and why amount:decimal{5,2} breaks in zsh."
 summary:
 date: 2015-04-19
 published: true

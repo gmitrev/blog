@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Hello World
+description: "The first post on this blog, which will mostly be about programming and tech."
 summary: Every techie's first post
 date: 2015-04-06
 published: true

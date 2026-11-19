@@ -1,6 +1,7 @@
 ---
 layout: post
 title: The Safe Navigation Operator (&.) in Ruby
+description: "How the safe navigation operator (&.) from Ruby 2.3 works and how it differs from ActiveSupport's try."
 summary: Ruby 2.3 introduces the &. operator which will make dealing with nils easier
 date: 2015-11-13
 published: true

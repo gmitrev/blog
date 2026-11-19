@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Simple lightbox with just a little JS and CSS
+description: "An image lightbox built with the dialog element and a few lines of JavaScript instead of a library."
 date: 2026-06-04 00:46 +0300
 ---
 

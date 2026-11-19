@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Yanking Webpacker out of Rails (6)
+description: "How to create a Rails 6 app without Webpacker and put JavaScript back in the Sprockets pipeline."
 summary: How to use Rails without webpacker
 date: 2019-12-27 23:30
 categories: ruby

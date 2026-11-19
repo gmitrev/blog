@@ -1,0 +1,40 @@
+@font-face { font-family: "Bitter"; font-weight: 400; src: url("../../assets/fonts/bitter-v40-latin-regular.woff2") format("woff2"); unicode-range: U+0000-00FF, U+2000-206F, U+20AC; }
+@font-face { font-family: "Bitter"; font-weight: 400; src: url("../../assets/fonts/bitter-v42-cyrillic-regular.woff2") format("woff2"); unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Bitter"; font-weight: 700; src: url("../../assets/fonts/bitter-v40-latin-700.woff2") format("woff2"); unicode-range: U+0000-00FF, U+2000-206F, U+20AC; }
+@font-face { font-family: "Bitter"; font-weight: 700; src: url("../../assets/fonts/bitter-v42-cyrillic-700.woff2") format("woff2"); unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; src: url("../../assets/fonts/ibm-plex-mono-v20-latin-regular.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 600; src: url("../../assets/fonts/ibm-plex-mono-v20-latin-600.woff2") format("woff2"); }
+
+html, body { margin: 0; }
+
+.card {
+  width: 1200px;
+  height: 630px;
+  box-sizing: border-box;
+  padding: 56px 72px;
+  background: #FFF1DE;
+  color: #292524;
+  font-family: "Bitter", Georgia, serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.mono { font-family: "IBM Plex Mono", monospace; }
+
+.top { display: flex; justify-content: space-between; align-items: center; font-size: 22px; }
+.brand { color: #BE123C; font-weight: 600; text-decoration: underline wavy; text-underline-offset: 10px; }
+.meta { color: #57534E; }
+.byline { font-size: 28px; color: #44403C; }
+
+h1 { margin: 0; font-weight: 700; line-height: 1.08; }
+.description { font-size: 30px; line-height: 1.4; color: #44403C; max-width: 940px; }
+.footer { font-size: 22px; text-align: center; }
+
+.bars { display: flex; flex-direction: column; gap: 18px; }
+.bar-row { display: flex; align-items: center; gap: 20px; }
+.bar-label { width: 250px; font-size: 22px; color: #44403C; text-align: right; }
+.bar-track { flex: 1; display: flex; align-items: center; gap: 14px; }
+.bar { height: 36px; border-radius: 0 6px 6px 0; background: #A8A29E; }
+.bar.mine { background: #BE123C; }
+.bar-value { font-size: 30px; font-weight: 700; }

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "TIL: :restrict_with_error"
+description: "Rails can stop a record from being deleted while associated records exist with dependent: :restrict_with_error."
 date: 2026-07-06 23:52 +0300
 categories: rails
 published: true

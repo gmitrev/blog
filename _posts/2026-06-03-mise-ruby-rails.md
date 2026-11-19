@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Managing Ruby versions with Mise
+description: "Switching from chruby to mise for Ruby and Node versions, with precompiled Ruby binaries instead of compiling every version."
 date: 2026-06-03 18:10 +0300
 ---
 

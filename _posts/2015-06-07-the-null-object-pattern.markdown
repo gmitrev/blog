@@ -1,6 +1,7 @@
 ---
 layout: post
 title: The Null Object pattern
+description: "Using the Null Object pattern in Ruby to replace nil checks scattered around the code."
 summary: A technique for dealing with certain nil errors
 date: 2015-06-07
 published: true

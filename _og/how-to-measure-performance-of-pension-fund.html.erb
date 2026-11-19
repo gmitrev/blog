@@ -1,0 +1,35 @@
+<%
+  rows = [
+    ["УПФ ОББ", 28, true],
+    ["STOXX Europe 600", 131, false],
+    ["FTSE All-World", 148, false],
+    ["S&P 500", 181, false]
+  ]
+  widest = rows.map { |row| row[1] }.max
+%><!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="card.css">
+</head>
+<body>
+<div class="card" style="gap: 40px">
+  <div style="display: flex; flex-direction: column; gap: 16px">
+    <div class="top mono"><span class="byline">Georgi Mitrev's blog</span></div>
+    <h1 style="font-size: 56px; line-height: 1.1"><%= h(title) %></h1>
+  </div>
+  <div class="bars">
+    <% rows.each do |label, pct, mine| %>
+    <div class="bar-row">
+      <div class="bar-label"><%= h(label) %></div>
+      <div class="bar-track">
+        <div class="bar<%= " mine" if mine %>" style="width: <%= (pct.to_f / widest * 620).round %>px"></div>
+        <div class="bar-value">+<%= pct %>%</div>
+      </div>
+    </div>
+    <% end %>
+  </div>
+  <div class="footer mono"><span class="brand">https://mitrev.net</span></div>
+</div>
+</body>
+</html>

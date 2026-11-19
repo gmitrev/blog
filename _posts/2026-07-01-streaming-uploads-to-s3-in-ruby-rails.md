@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Streaming uploads to S3 in Ruby/Rails
+description: "Streaming pg_dump output straight to S3 from Ruby without writing it to disk, and the gotchas along the way."
 date: 2026-08-07 18:16 +0300
 categories: ruby
 ---

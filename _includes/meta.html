@@ -1,6 +1,12 @@
 {%- assign meta_title = page.title | default: site.title -%}
 {%- assign meta_description = page.description | default: page.title | default: site.description -%}
-{%- assign meta_image = page.image | default: site.image -%}
+{%- assign og_path = "/assets/images/og/" | append: page.slug | append: ".png" -%}
+{%- assign og_card = site.static_files | where: "path", og_path | first -%}
+{%- if og_card -%}
+  {%- assign meta_image = og_path -%}
+{%- else -%}
+  {%- assign meta_image = page.image | default: site.image -%}
+{%- endif -%}
 <meta name="description" content="{{ meta_description | escape }}">
 
 <meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}">
@@ -10,9 +16,15 @@
 <meta property="og:site_name" content="{{ site.title | escape }}">
 {%- if meta_image %}
 <meta property="og:image" content="{{ meta_image | absolute_url }}">
+<meta property="og:image:alt" content="{{ meta_title | escape }}">
+{%- if og_card %}
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+{%- endif %}
 {%- endif %}
 
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="{% if og_card or page.image %}summary_large_image{% else %}summary{% endif %}">
 <meta name="twitter:title" content="{{ meta_title | escape }}">
 <meta name="twitter:description" content="{{ meta_description | escape }}">
 {%- if meta_image %}
