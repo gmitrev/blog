@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Как да следим доходността на втория стълб - Georgi Mitrev</title>
+
+    <meta name="description" content="Как да следим доходността на втория стълб">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Как да следим доходността на втория стълб">
+<meta property="og:description" content="Как да следим доходността на втория стълб">
+<meta property="og:url" content="https://mitrev.net/2026/11/19/how-to-measure-performance-of-pension-fund/">
+<meta property="og:site_name" content="Georgi Mitrev">
+<meta property="og:image" content="https://mitrev.net/assets/images/avatar.jpg">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Как да следим доходността на втория стълб">
+<meta name="twitter:description" content="Как да следим доходността на втория стълб">
+<meta name="twitter:image" content="https://mitrev.net/assets/images/avatar.jpg">
+
+    <link type="application/atom+xml" rel="alternate" href="https://mitrev.net/feed.xml" title="Georgi Mitrev" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+
+    <link rel="preload" href="/assets/fonts/bitter-v40-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/ibm-plex-mono-v20-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <script async="" data-website-id="f7e00ced-3f46-4ba8-b750-9d8e8b0ef5eb" defer="" src="https://analytics.nadir.dev/script.js" /></script>
+  </head>
+  <body class="bg-cream mx-8 lg:mx-auto lg:w-full lg:max-w-2xl flex flex-col h-screen">
+    <header class="mt-6 mb-10 flex items-center justify-between">
+  <a href="/" class="home">/</a>
+
+  <nav class="flex space-x-6">
+    <a href="/projects">/projects</a>
+    <a href="/about">/about</a>
+  </nav>
+</header>
+
+
+    <main class="grow">
+      <div class="my-8 text-center">
+  <h1>Как да следим доходността на втория стълб</h1>
+
+  <div class="font-monospace text-xs text-slate-600 mt-4">Nov 19, 2026</div>
+</div>
+
+<article class="mt-6 grow">
+  <p>Напоследък много се говори за втория пенсионен стълб и опитите на правителството да си присвои
+част от парите ни. Това ме накара да се замисля как всъщност се справят инвестициите ми там - имам
+някаква идея, защото всяка година фондът ми ми изпраща summary email, но той не е особено детайлен.</p>
+
+<p>От години разработвам <a href="https://stonksfolio.com" target="_blank" rel="noopener noreferrer">Stonksfolio</a> - приложение, което дава по-добра
+видимост върху различните ми инвестиции в различните брокери, и поддръжката на тези пенсионни
+фондове е “натурален фит”. Остава само да намерим актуални цени на дяловете на фондовете, които за
+щастие КФН <a href="https://eis.fsc.bg/pension-share/498" target="_blank" rel="noopener noreferrer">публикуват на сайта си</a>.</p>
+
+<p>Тук следва по-трудната част - да намерим подробна история на движенията в пенсионния фонд. Аз бях
+много приятно изненадан от <a href="https://ubb-pensions.bg/" target="_blank" rel="noopener noreferrer">ОББ</a>, където е моята партида. Просто им
+пуснах един мейл и ги помолих да ми изпратят пълната история, и след (не се шегувам) един час ми
+бяха върнали един PDF с всички транзакции. Доста ме впечатлиха :)</p>
+
+<p>След като имах историята и исторически данни за цените на различните фондове, трябваше просто да
+напиша един parser за PDF-а и автоматично да вкарам <a href="https://stonksfolio.com/showcases/8XGteb/portfolios/1GtNdq" target="_blank" rel="noopener noreferrer">всички данни в
+Stonksfolio</a>:</p>
+
+<p><img src="/assets/images/second-pillar-pension/second-pillar-returns.webp" alt="Портфолиото на ОББ УПФ в Stonksfolio: стойност €13 934, внесени €11 746, доходност 28.1% от 2020 г. насам" class="lightbox-trigger"></p>
+
+<p class="caption">Доходността на партидата ми в ОББ от май 2020 насам.</p>
+
+<h2 id="анализ">Анализ</h2>
+
+<p>Тъй като преди 2020 партидата ми беше в NN, в справката нямаше данни по месец от преди това, а
+просто цялата съществуваща партида наведнъж. Въпреки това може да забележим доста интересни неща:</p>
+
+<p><img src="/assets/images/second-pillar-pension/overview.webp" alt="Обобщение на партидата в УПФ-ОББ: стойност €13 934, внесени €11 746, нетна доходност 18.63%, TWR 28.14%, такси €222" class="lightbox-trigger"></p>
+
+<p class="caption">Обобщение на партидата: внесени суми, нетна доходност, TWR и платени такси.</p>
+
+<h4 id="такси">Такси</h4>
+
+<p>При нетна възвръщаемост от €2188 съм платил €222 таксички, което си е над 10%.</p>
+
+<p>Удръжката на вноска в този фонд е 3.75% (другите може би са различни, но се съмнявам да са такива
+будали :)) + 0.75% годишно върху ЦЯЛАТА партида (<a href="https://ubb-pensions.bg/calculator" target="_blank" rel="noopener noreferrer">source</a>),
+което е брутално и напълно в полза на пенсионните дружества, и напълно унищожава потенциалните
+ползи от инвестирането. По-добре тея пари да си ги управлявам сам, ако можех :).</p>
+
+<p>От 2027 максималните такси започват да намаляват постепенно до 2036 (<a href="https://lex.bg/laws/ldoc/1597824512" target="_blank" rel="noopener noreferrer">КСО, чл.
+201</a>).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Година</th>
+      <th>Удръжка от вноска</th>
+      <th>Динамичен фонд</th>
+      <th>Балансиран фонд</th>
+      <th>Консервативен фонд</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2019–2026</td>
+      <td>3.75%</td>
+      <td>0.75%</td>
+      <td>0.75%</td>
+      <td>0.75%</td>
+    </tr>
+    <tr>
+      <td>2027</td>
+      <td>3.59%</td>
+      <td>0.65% + 1.5% от дохода</td>
+      <td>0.65% + 1% от дохода</td>
+      <td>0.65%</td>
+    </tr>
+    <tr>
+      <td>2028</td>
+      <td>3.42%</td>
+      <td>0.60% + 2% от дохода</td>
+      <td>0.62% + 1.25% от дохода</td>
+      <td>0.60%</td>
+    </tr>
+    <tr>
+      <td>2029</td>
+      <td>3.26%</td>
+      <td>0.55% + 2.5% от дохода</td>
+      <td>0.59% + 1.5% от дохода</td>
+      <td>0.55%</td>
+    </tr>
+    <tr>
+      <td>2030</td>
+      <td>3.09%</td>
+      <td>0.50% + 3% от дохода</td>
+      <td>0.56% + 1.75% от дохода</td>
+      <td>0.50%</td>
+    </tr>
+    <tr>
+      <td>2031</td>
+      <td>2.93%</td>
+      <td>0.45% + 3.5% от дохода</td>
+      <td>0.53% + 2% от дохода</td>
+      <td>0.45%</td>
+    </tr>
+    <tr>
+      <td>2032</td>
+      <td>2.76%</td>
+      <td>0.40% + 4% от дохода</td>
+      <td>0.50% + 2.25% от дохода</td>
+      <td>0.40%</td>
+    </tr>
+    <tr>
+      <td>2033</td>
+      <td>2.60%</td>
+      <td>0.35% + 4.5% от дохода</td>
+      <td>0.47% + 2.5% от дохода</td>
+      <td>0.35%</td>
+    </tr>
+    <tr>
+      <td>2034</td>
+      <td>2.43%</td>
+      <td>0.30% + 5% от дохода</td>
+      <td>0.44% + 2.75% от дохода</td>
+      <td>0.30%</td>
+    </tr>
+    <tr>
+      <td>2035</td>
+      <td>2.27%</td>
+      <td>0.25% + 5.5% от дохода</td>
+      <td>0.41% + 3% от дохода</td>
+      <td>0.25%</td>
+    </tr>
+    <tr>
+      <td>от 2036</td>
+      <td>2.10%</td>
+      <td>0.20% + 6% от дохода</td>
+      <td>0.38% + 3.25% от дохода</td>
+      <td>0.20%</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Годишната такса е процент от нетните активи, а за динамичния и балансирания фонд и процент от
+реализирания доход. При доходност от 6% това прави около 0.56% годишно за динамичния фонд от
+2036, спрямо 0.75% днес.</p>
+
+<p>Ако сметнем и тези 0.75% на година, които са включени в цената на дяловете, съм платил още €480
+индиректно, което прави загубите около €700, или над 30% от възвръщаемостта 🤯.</p>
+
+<p><img src="/assets/images/second-pillar-pension/fees-growth.webp" alt="Натрупана сума за 40 години при €106 месечна вноска и 6% доходност: без такси €202 396, VWCE €194 893, УПФ с таксите от 2027 €170 059, УПФ при 3.75% + 0.75% €159 488" class="lightbox-trigger"></p>
+
+<p class="caption">Колко ще се натрупа за 40 години при еднакви вноски и доходност, но различни такси.</p>
+
+<p><img src="/assets/images/second-pillar-pension/fees-lost.webp" alt="Изгубена сума заради такси за 40 години: VWCE −€7 504 (3.7%), УПФ с таксите от 2027 −€32 338 (16.0%), УПФ при 3.75% + 0.75% −€42 908 (21.2%)" class="lightbox-trigger"></p>
+
+<p class="caption">Колко пари изяждат таксите спрямо сценария без такси.</p>
+
+<h4 id="възвръщаемост">Възвръщаемост</h4>
+
+<p>Нетната възвръщаемост за малко над 6 години е 19% <a href="https://stonksfolio.com/docs/9-net-return-vs-twr" target="_blank" rel="noopener noreferrer">(28% time-weighted)</a>, което на хартия не изглежда зле, но ако
+сравним с много от популярните индекси изглежда смешно:</p>
+
+<h5 id="sp-500">S&amp;P 500</h5>
+
+<p><img src="/assets/images/second-pillar-pension/benchmark-sp500.webp" alt="Времево претеглена доходност на фонда (+28%) срещу S&amp;P 500 (+181%) от май 2020 г." class="lightbox-trigger"></p>
+
+<p class="caption">Времево претеглената доходност на фонда спрямо S&amp;P 500 от май 2020.</p>
+
+<p>Очаквано, <code class="language-plaintext highlighter-rouge">S&amp;P 500</code> напълно “унищожава” нашите пенсионни фондове. Без изненади.</p>
+
+<h5 id="ftse-all-world">FTSE All-World</h5>
+
+<p><img src="/assets/images/second-pillar-pension/benchmark-ftseworld.webp" alt="Времево претеглена доходност на фонда (+28%) срещу FTSE All-World (+148%) от май 2020 г." class="lightbox-trigger"></p>
+
+<p class="caption">Времево претеглената доходност на фонда спрямо FTSE All-World от май 2020.</p>
+
+<p>Тук също виждаме гигантска разлика. Интересното тук е, че един от най-популярните UCITS ETF-и в
+България и Европа, <a href="https://www.justetf.com/en/etf-profile.html?isin=IE00BK5BQT80" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">VWCE</code></a>, следи
+точно този индекс и най-добре показва колко крайно безполезни са българските фондове.</p>
+
+<h5 id="stoxx-europe-600">STOXX Europe 600</h5>
+
+<p><img src="/assets/images/second-pillar-pension/benchmark-stoxx600.webp" alt="Времево претеглена доходност на фонда (+28%) срещу STOXX Europe 600 (+131%) от май 2020 г." class="lightbox-trigger"></p>
+
+<p class="caption">Времево претеглената доходност на фонда спрямо STOXX Europe 600 от май 2020.</p>
+
+<p>Съпоставка с европейския брат на S&amp;P 500. Не успява да бие дори FTSE All-World, за жалост.</p>
+
+<h4 id="подробна-история">Подробна история</h4>
+
+<p><img src="/assets/images/second-pillar-pension/annual.webp" alt="Доходност на фонда по години 2020–2026 спрямо FTSE All-World; фондът изостава всяка година освен 2022 г." class="lightbox-trigger"></p>
+
+<p class="caption">Доходност по години - фондът изостава всяка година освен 2022.</p>
+
+<p>На хартия, средната възвръщаемост по година не е толкова зле, но реално дори не успява да
+компенсира за инфлацията през този период. Направи ми впечатление и друго. Докато <code class="language-plaintext highlighter-rouge">FTSE All-World</code>
+вади страхотна възвръщаемост през зелените години, биейки в пъти нашия фонд, през 2022 загубите им
+са почти идентични. Това показва, че нашият хиперконсервативен фонд е консервативен само в добрите
+години, а в лошите времена е почти толкова лош, колкото останалите. Когато всички губят, губим и
+ние, но когато другите печелят, ние печелим доста по-малко, а таксичките допълнително убиват това.</p>
+
+<p>Това би трябвало да се промени малко догодина, когато ще преминем на <a href="https://www.fsc.bg/za-potrebitelya/osiguritelna-dejnost/vsichko-koeto-tryabva-da-znaete-za-multifondoviya-model-vaprosi-i-otgovori" target="_blank" rel="noopener noreferrer">мултифондов
+модел</a>. Накратко, вместо един фонд за всички, ще има 3 - динамичен, балансиран и консервативен. В динамичния ще попаднат всички хора под 50 и там до 90% от активите могат се инвестират в акции, което би трябвало значително да увеличи възвръщаемостта:</p>
+
+<p><img src="/assets/images/second-pillar-pension/multifund.webp" alt="Доходност на балансирания фонд (2.04%) при сегашния модел и на динамичния (5.60%), балансирания (3.46%) и консервативния (1.98%) профил при мултифондовия модел" class="lightbox-trigger"></p>
+
+<p class="caption">Доходността при сегашния модел спрямо трите подфонда в мултифондовия модел.</p>
+
+<h2 id="как-да-направите-това-за-вашите-партиди">Как да направите това за вашите партиди</h2>
+
+<p>Ако искате да проверите как са се справили вашите партиди, може да се регистрирате в
+<a href="https://stonksfolio.com" target="_blank" rel="noopener noreferrer">Stonksfolio</a> и да импортнете вашите данни. Подробни указания за това може
+да намерите <a href="https://stonksfolio.com/docs/16-pension-funds" target="_blank" rel="noopener noreferrer">тук</a>. За момента автоматично се
+поддържа само ОББ, защото нямам екземпляри от другите дружества, но може да помолите някой чатбот
+да анонимизира данните ви и да ги преобразува в един CSV, който лесно може да се импортне.</p>
+
+<p>Алтернативно просто попитайте чатбота да ви анализира данните и да ви построи няколко графики :)</p>
+
+</article>
+
+
+<div class="mt-10 text-center text-sm">
+  <a href="https://twitter.com/intent/tweet?text=%D0%9A%D0%B0%D0%BA+%D0%B4%D0%B0+%D1%81%D0%BB%D0%B5%D0%B4%D0%B8%D0%BC+%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%BD%D0%BE%D1%81%D1%82%D1%82%D0%B0+%D0%BD%D0%B0+%D0%B2%D1%82%D0%BE%D1%80%D0%B8%D1%8F+%D1%81%D1%82%D1%8A%D0%BB%D0%B1&amp;url=https%3A%2F%2Fmitrev.net%2F2026%2F11%2F19%2Fhow-to-measure-performance-of-pension-fund%2F&amp;via=gmitrev" target="_blank" rel="nofollow noopener noopener noreferrer">
+    Discuss this post on Twitter →
+  </a>
+</div>
+
+<div class="border border-pink-200 p-4 pt-2 bg-rose-50 rounded text-sm mt-12">
+  <div class="text-pink-300  text-center mb-2" style="font-size: 8px">
+    <span class="text-rose-500 font-bold">[</span>
+    shameless plug
+    <span class="text-rose-500 font-bold">]</span>
+  </div>
+  Psst. Check out my latest project, <a class="text-sm" href="https://nadir.dev" target="_blank" rel="noopener noreferrer">Nadir</a>, for fun trivia and technical quizzes.
+</div>
+
+    </main>
+
+    <footer class="text-center mt-10 pb-10 flex justify-center gap-6 ">
+  <a href="https://twitter.com/gmitrev" rel="nofollow noopener noreferrer" target="_blank">Twitter</a>
+  <a href="https://github.com/gmitrev" rel="nofollow noopener noreferrer" target="_blank">Github</a>
+</footer>
+
+
+    <dialog id="lightbox" class="lightbox">
+      <img alt="">
+    </dialog>
+
+    <script>
+      // Poor man's lightbox
+      (function () {
+        const dialog = document.getElementById('lightbox');
+        const img = dialog.querySelector('img');
+
+        document.addEventListener('click', function (e) {
+          const trigger = e.target.closest('.lightbox-trigger');
+          if (!trigger) return;
+          img.src = trigger.currentSrc || trigger.src;
+          img.alt = trigger.alt;
+          dialog.showModal();
+        });
+
+        dialog.addEventListener('click', function () { dialog.close(); });
+      })();
+    </script>
+  </body>
+</html>

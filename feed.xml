@@ -1,0 +1,1164 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://mitrev.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://mitrev.net/" rel="alternate" type="text/html" /><updated>2026-11-19T10:16:48+00:00</updated><id>https://mitrev.net/feed.xml</id><title type="html">Georgi Mitrev</title><subtitle>Personal blog of Georgi Mitrev</subtitle><author><name>Georgi Mitrev</name></author><entry><title type="html">Как да следим доходността на втория стълб</title><link href="https://mitrev.net/2026/11/19/how-to-measure-performance-of-pension-fund/" rel="alternate" type="text/html" title="Как да следим доходността на втория стълб" /><published>2026-11-19T07:29:00+00:00</published><updated>2026-11-19T07:29:00+00:00</updated><id>https://mitrev.net/2026/11/19/how-to-measure-performance-of-pension-fund</id><content type="html" xml:base="https://mitrev.net/2026/11/19/how-to-measure-performance-of-pension-fund/"><![CDATA[<p>Напоследък много се говори за втория пенсионен стълб и опитите на правителството да си присвои
+част от парите ни. Това ме накара да се замисля как всъщност се справят инвестициите ми там - имам
+някаква идея, защото всяка година фондът ми ми изпраща summary email, но той не е особено детайлен.</p>
+
+<p>От години разработвам <a href="https://stonksfolio.com">Stonksfolio</a> - приложение, което дава по-добра
+видимост върху различните ми инвестиции в различните брокери, и поддръжката на тези пенсионни
+фондове е “натурален фит”. Остава само да намерим актуални цени на дяловете на фондовете, които за
+щастие КФН <a href="https://eis.fsc.bg/pension-share/498">публикуват на сайта си</a>.</p>
+
+<p>Тук следва по-трудната част - да намерим подробна история на движенията в пенсионния фонд. Аз бях
+много приятно изненадан от <a href="https://ubb-pensions.bg/">ОББ</a>, където е моята партида. Просто им
+пуснах един мейл и ги помолих да ми изпратят пълната история, и след (не се шегувам) един час ми
+бяха върнали един PDF с всички транзакции. Доста ме впечатлиха :)</p>
+
+<p>След като имах историята и исторически данни за цените на различните фондове, трябваше просто да
+напиша един parser за PDF-а и автоматично да вкарам <a href="https://stonksfolio.com/showcases/8XGteb/portfolios/1GtNdq">всички данни в
+Stonksfolio</a>:</p>
+
+<p><img src="/assets/images/second-pillar-pension/second-pillar-returns.webp" alt="Портфолиото на ОББ УПФ в Stonksfolio: стойност €13 934, внесени €11 746, доходност 28.1% от 2020 г. насам" class="lightbox-trigger" /></p>
+
+<p class="caption">Доходността на партидата ми в ОББ от май 2020 насам.</p>
+
+<h2 id="анализ">Анализ</h2>
+
+<p>Тъй като преди 2020 партидата ми беше в NN, в справката нямаше данни по месец от преди това, а
+просто цялата съществуваща партида наведнъж. Въпреки това може да забележим доста интересни неща:</p>
+
+<p><img src="/assets/images/second-pillar-pension/overview.webp" alt="Обобщение на партидата в УПФ-ОББ: стойност €13 934, внесени €11 746, нетна доходност 18.63%, TWR 28.14%, такси €222" class="lightbox-trigger" /></p>
+
+<p class="caption">Обобщение на партидата: внесени суми, нетна доходност, TWR и платени такси.</p>
+
+<h4 id="такси">Такси</h4>
+
+<p>При нетна възвръщаемост от €2188 съм платил €222 таксички, което си е над 10%.</p>
+
+<p>Удръжката на вноска в този фонд е 3.75% (другите може би са различни, но се съмнявам да са такива
+будали :)) + 0.75% годишно върху ЦЯЛАТА партида (<a href="https://ubb-pensions.bg/calculator">source</a>),
+което е брутално и напълно в полза на пенсионните дружества, и напълно унищожава потенциалните
+ползи от инвестирането. По-добре тея пари да си ги управлявам сам, ако можех :).</p>
+
+<p>От 2027 максималните такси започват да намаляват постепенно до 2036 (<a href="https://lex.bg/laws/ldoc/1597824512">КСО, чл.
+201</a>).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Година</th>
+      <th>Удръжка от вноска</th>
+      <th>Динамичен фонд</th>
+      <th>Балансиран фонд</th>
+      <th>Консервативен фонд</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2019–2026</td>
+      <td>3.75%</td>
+      <td>0.75%</td>
+      <td>0.75%</td>
+      <td>0.75%</td>
+    </tr>
+    <tr>
+      <td>2027</td>
+      <td>3.59%</td>
+      <td>0.65% + 1.5% от дохода</td>
+      <td>0.65% + 1% от дохода</td>
+      <td>0.65%</td>
+    </tr>
+    <tr>
+      <td>2028</td>
+      <td>3.42%</td>
+      <td>0.60% + 2% от дохода</td>
+      <td>0.62% + 1.25% от дохода</td>
+      <td>0.60%</td>
+    </tr>
+    <tr>
+      <td>2029</td>
+      <td>3.26%</td>
+      <td>0.55% + 2.5% от дохода</td>
+      <td>0.59% + 1.5% от дохода</td>
+      <td>0.55%</td>
+    </tr>
+    <tr>
+      <td>2030</td>
+      <td>3.09%</td>
+      <td>0.50% + 3% от дохода</td>
+      <td>0.56% + 1.75% от дохода</td>
+      <td>0.50%</td>
+    </tr>
+    <tr>
+      <td>2031</td>
+      <td>2.93%</td>
+      <td>0.45% + 3.5% от дохода</td>
+      <td>0.53% + 2% от дохода</td>
+      <td>0.45%</td>
+    </tr>
+    <tr>
+      <td>2032</td>
+      <td>2.76%</td>
+      <td>0.40% + 4% от дохода</td>
+      <td>0.50% + 2.25% от дохода</td>
+      <td>0.40%</td>
+    </tr>
+    <tr>
+      <td>2033</td>
+      <td>2.60%</td>
+      <td>0.35% + 4.5% от дохода</td>
+      <td>0.47% + 2.5% от дохода</td>
+      <td>0.35%</td>
+    </tr>
+    <tr>
+      <td>2034</td>
+      <td>2.43%</td>
+      <td>0.30% + 5% от дохода</td>
+      <td>0.44% + 2.75% от дохода</td>
+      <td>0.30%</td>
+    </tr>
+    <tr>
+      <td>2035</td>
+      <td>2.27%</td>
+      <td>0.25% + 5.5% от дохода</td>
+      <td>0.41% + 3% от дохода</td>
+      <td>0.25%</td>
+    </tr>
+    <tr>
+      <td>от 2036</td>
+      <td>2.10%</td>
+      <td>0.20% + 6% от дохода</td>
+      <td>0.38% + 3.25% от дохода</td>
+      <td>0.20%</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Годишната такса е процент от нетните активи, а за динамичния и балансирания фонд и процент от
+реализирания доход. При доходност от 6% това прави около 0.56% годишно за динамичния фонд от
+2036, спрямо 0.75% днес.</p>
+
+<p>Ако сметнем и тези 0.75% на година, които са включени в цената на дяловете, съм платил още €480
+индиректно, което прави загубите около €700, или над 30% от възвръщаемостта 🤯.</p>
+
+<p><img src="/assets/images/second-pillar-pension/fees-growth.webp" alt="Натрупана сума за 40 години при €106 месечна вноска и 6% доходност: без такси €202 396, VWCE €194 893, УПФ с таксите от 2027 €170 059, УПФ при 3.75% + 0.75% €159 488" class="lightbox-trigger" /></p>
+
+<p class="caption">Колко ще се натрупа за 40 години при еднакви вноски и доходност, но различни такси.</p>
+
+<p><img src="/assets/images/second-pillar-pension/fees-lost.webp" alt="Изгубена сума заради такси за 40 години: VWCE −€7 504 (3.7%), УПФ с таксите от 2027 −€32 338 (16.0%), УПФ при 3.75% + 0.75% −€42 908 (21.2%)" class="lightbox-trigger" /></p>
+
+<p class="caption">Колко пари изяждат таксите спрямо сценария без такси.</p>
+
+<h4 id="възвръщаемост">Възвръщаемост</h4>
+
+<p>Нетната възвръщаемост за малко над 6 години е 19% <a href="https://stonksfolio.com/docs/9-net-return-vs-twr">(28% time-weighted)</a>, което на хартия не изглежда зле, но ако
+сравним с много от популярните индекси изглежда смешно:</p>
+
+<h5 id="sp-500">S&amp;P 500</h5>
+
+<p><img src="/assets/images/second-pillar-pension/benchmark-sp500.webp" alt="Времево претеглена доходност на фонда (+28%) срещу S&amp;P 500 (+181%) от май 2020 г." class="lightbox-trigger" /></p>
+
+<p class="caption">Времево претеглената доходност на фонда спрямо S&amp;P 500 от май 2020.</p>
+
+<p>Очаквано, <code class="language-plaintext highlighter-rouge">S&amp;P 500</code> напълно “унищожава” нашите пенсионни фондове. Без изненади.</p>
+
+<h5 id="ftse-all-world">FTSE All-World</h5>
+
+<p><img src="/assets/images/second-pillar-pension/benchmark-ftseworld.webp" alt="Времево претеглена доходност на фонда (+28%) срещу FTSE All-World (+148%) от май 2020 г." class="lightbox-trigger" /></p>
+
+<p class="caption">Времево претеглената доходност на фонда спрямо FTSE All-World от май 2020.</p>
+
+<p>Тук също виждаме гигантска разлика. Интересното тук е, че един от най-популярните UCITS ETF-и в
+България и Европа, <a href="https://www.justetf.com/en/etf-profile.html?isin=IE00BK5BQT80"><code class="language-plaintext highlighter-rouge">VWCE</code></a>, следи
+точно този индекс и най-добре показва колко крайно безполезни са българските фондове.</p>
+
+<h5 id="stoxx-europe-600">STOXX Europe 600</h5>
+
+<p><img src="/assets/images/second-pillar-pension/benchmark-stoxx600.webp" alt="Времево претеглена доходност на фонда (+28%) срещу STOXX Europe 600 (+131%) от май 2020 г." class="lightbox-trigger" /></p>
+
+<p class="caption">Времево претеглената доходност на фонда спрямо STOXX Europe 600 от май 2020.</p>
+
+<p>Съпоставка с европейския брат на S&amp;P 500. Не успява да бие дори FTSE All-World, за жалост.</p>
+
+<h4 id="подробна-история">Подробна история</h4>
+
+<p><img src="/assets/images/second-pillar-pension/annual.webp" alt="Доходност на фонда по години 2020–2026 спрямо FTSE All-World; фондът изостава всяка година освен 2022 г." class="lightbox-trigger" /></p>
+
+<p class="caption">Доходност по години - фондът изостава всяка година освен 2022.</p>
+
+<p>На хартия, средната възвръщаемост по година не е толкова зле, но реално дори не успява да
+компенсира за инфлацията през този период. Направи ми впечатление и друго. Докато <code class="language-plaintext highlighter-rouge">FTSE All-World</code>
+вади страхотна възвръщаемост през зелените години, биейки в пъти нашия фонд, през 2022 загубите им
+са почти идентични. Това показва, че нашият хиперконсервативен фонд е консервативен само в добрите
+години, а в лошите времена е почти толкова лош, колкото останалите. Когато всички губят, губим и
+ние, но когато другите печелят, ние печелим доста по-малко, а таксичките допълнително убиват това.</p>
+
+<p>Това би трябвало да се промени малко догодина, когато ще преминем на <a href="https://www.fsc.bg/za-potrebitelya/osiguritelna-dejnost/vsichko-koeto-tryabva-da-znaete-za-multifondoviya-model-vaprosi-i-otgovori">мултифондов
+модел</a>. Накратко, вместо един фонд за всички, ще има 3 - динамичен, балансиран и консервативен. В динамичния ще попаднат всички хора под 50 и там до 90% от активите могат се инвестират в акции, което би трябвало значително да увеличи възвръщаемостта:</p>
+
+<p><img src="/assets/images/second-pillar-pension/multifund.webp" alt="Доходност на балансирания фонд (2.04%) при сегашния модел и на динамичния (5.60%), балансирания (3.46%) и консервативния (1.98%) профил при мултифондовия модел" class="lightbox-trigger" /></p>
+
+<p class="caption">Доходността при сегашния модел спрямо трите подфонда в мултифондовия модел.</p>
+
+<h2 id="как-да-направите-това-за-вашите-партиди">Как да направите това за вашите партиди</h2>
+
+<p>Ако искате да проверите как са се справили вашите партиди, може да се регистрирате в
+<a href="https://stonksfolio.com">Stonksfolio</a> и да импортнете вашите данни. Подробни указания за това може
+да намерите <a href="https://stonksfolio.com/docs/16-pension-funds">тук</a>. За момента автоматично се
+поддържа само ОББ, защото нямам екземпляри от другите дружества, но може да помолите някой чатбот
+да анонимизира данните ви и да ги преобразува в един CSV, който лесно може да се импортне.</p>
+
+<p>Алтернативно просто попитайте чатбота да ви анализира данните и да ви построи няколко графики :)</p>]]></content><author><name>Georgi Mitrev</name></author><summary type="html"><![CDATA[Напоследък много се говори за втория пенсионен стълб и опитите на правителството да си присвои част от парите ни. Това ме накара да се замисля как всъщност се справят инвестициите ми там - имам някаква идея, защото всяка година фондът ми ми изпраща summary email, но той не е особено детайлен.]]></summary></entry><entry><title type="html">Streaming uploads to S3 in Ruby/Rails</title><link href="https://mitrev.net/ruby/2026/08/07/streaming-uploads-to-s3-in-ruby-rails/" rel="alternate" type="text/html" title="Streaming uploads to S3 in Ruby/Rails" /><published>2026-08-07T15:16:00+00:00</published><updated>2026-08-07T15:16:00+00:00</updated><id>https://mitrev.net/ruby/2026/08/07/streaming-uploads-to-s3-in-ruby-rails</id><content type="html" xml:base="https://mitrev.net/ruby/2026/08/07/streaming-uploads-to-s3-in-ruby-rails/"><![CDATA[<p>When I started working on <a href="https://boringbackup.com">boring-backup</a>, I wanted to make the process
+of backing up a PostgreSQL database as frictionless as possible. In my vision, all you had to do
+was execute <code class="language-plaintext highlighter-rouge">bundle add boring-backup</code>, provide an S3 bucket and AWS credentials and maybe setup a
+slack webhook. Backups would then be executed in a background worker or manually with a cron.</p>
+
+<p>This means that, ideally, the executor would not dump a huge database on the filesystem where it
+happens to run - databases tend to be pretty large and this can cause a lot of issues. Instead of
+dumping the database and then uploading it to S3 and then deleting it, I decided to look into a
+different way of doing it - streaming directly from <code class="language-plaintext highlighter-rouge">pg_dump</code> into <code class="language-plaintext highlighter-rouge">S3</code> without touching the disk
+at all.</p>
+
+<h3 id="naive-implementation">Naive implementation</h3>
+
+<p>The input in our example will come out of <code class="language-plaintext highlighter-rouge">pg_dump</code>:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pg_dump database_name
+</code></pre></div></div>
+
+<p>This just dumps out the database to <code class="language-plaintext highlighter-rouge">stdout</code>. We can capture it in Ruby by using the <code class="language-plaintext highlighter-rouge">Open3</code>
+module:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'open3'</span>
+
+<span class="n">stdin</span><span class="p">,</span> <span class="n">pg_dump_out</span> <span class="o">=</span> <span class="no">Open3</span><span class="p">.</span><span class="nf">popen2</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">stdin</code> and <code class="language-plaintext highlighter-rouge">pg_dump_out</code> are instances of the <a href="https://docs.ruby-lang.org/en/master/IO.html"><code class="language-plaintext highlighter-rouge">IO</code>
+class</a>, which implements input/output streams on the
+operating system level. If you’ve used the <a href="https://docs.ruby-lang.org/en/master/File.html"><code class="language-plaintext highlighter-rouge">File</code></a>
+class, you should be familiar with <code class="language-plaintext highlighter-rouge">IO</code> as <code class="language-plaintext highlighter-rouge">File</code> is based on it.</p>
+
+<p>Now that we have captured the pg_dump output stream, we need to redirect it to S3. Using the
+official AWS SDK for Ruby, this is fairly easy. First, we need to build an <code class="language-plaintext highlighter-rouge">S3::Client</code> object:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"aws-sdk-s3"</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
+  <span class="ss">region:            </span><span class="s1">'eu-west-1'</span><span class="p">,</span>
+  <span class="ss">access_key_id:     </span><span class="no">ENV</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="s2">"AWS_ACCESS_KEY_ID"</span><span class="p">),</span>
+  <span class="ss">secret_access_key: </span><span class="no">ENV</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="s2">"AWS_SECRET_ACCESS_KEY"</span><span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>We’ll then use the <a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/TransferManager.html"><code class="language-plaintext highlighter-rouge">TransferManager</code> class</a> to upload the stream.</p>
+
+<div class="note">
+  <p>In older SDK versions, we’d actually use <a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#upload_stream-instance_method"><code class="language-plaintext highlighter-rouge">Aws::S3::Object#upload_stream</code> </a>, and you’ll see most guides use this. This method is, however, deprecated in the latest SDK and it is recommended to use <code class="language-plaintext highlighter-rouge">TransferManager</code>.</p>
+</div>
+
+<p>We’ll use
+<a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/TransferManager.html#upload_stream-instance_method"><code class="language-plaintext highlighter-rouge">Aws::S3::TransferManager#upload_stream</code></a>
+to get an <code class="language-plaintext highlighter-rouge">IO</code> stream for writing to S3 and then we’ll use
+<a href="https://docs.ruby-lang.org/en/master/IO.html#method-c-copy_stream"><code class="language-plaintext highlighter-rouge">IO.copy_stream</code></a> to do the
+actual copying. <code class="language-plaintext highlighter-rouge">IO.copy_stream</code> returns the number of bytes written, if this is needed.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">client</span> <span class="o">=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">transfer_manager</span> <span class="o">=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">TransferManager</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">client</span><span class="p">:)</span>
+
+<span class="n">stdin</span><span class="p">,</span> <span class="n">pg_dump_out</span> <span class="o">=</span> <span class="no">Open3</span><span class="p">.</span><span class="nf">popen2</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span>
+
+<span class="n">transfer_manager</span><span class="p">.</span><span class="nf">upload_stream</span><span class="p">(</span><span class="ss">bucket: </span><span class="s1">'bucket-name'</span><span class="p">,</span> <span class="ss">key: </span><span class="s1">'2026/06/06.dump'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">s3_stream</span><span class="o">|</span>
+  <span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">pg_dump_out</span><span class="p">,</span> <span class="n">s3_stream</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This will work but it has several issues. For one, if <code class="language-plaintext highlighter-rouge">pg_dump</code> fails midway, we’ll end up
+uploading a corrupted file without knowing it has been corrupted.</p>
+
+<h3 id="gotcha-1---checking-for-errors">Gotcha 1 - checking for errors</h3>
+
+<p><code class="language-plaintext highlighter-rouge">Open3.popen2</code> actually returns three objects: the two streams and a wait thread. We can probe the
+wait thread to check the exit code of the command:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">stdin</span><span class="p">,</span> <span class="n">pg_dump_out</span><span class="p">,</span> <span class="n">wait_thread</span> <span class="o">=</span> <span class="no">Open3</span><span class="p">.</span><span class="nf">popen2</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span>
+<span class="n">stdin</span><span class="p">.</span><span class="nf">close</span>
+
+<span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">pg_dump_out</span><span class="p">,</span> <span class="no">File</span><span class="o">::</span><span class="no">NULL</span><span class="p">)</span> <span class="c1"># pg_dump blocks once the pipe buffer (~64 KB) fills</span>
+<span class="c1"># Without consuming the output, the code below will hang forever for any non-trivial dump</span>
+
+<span class="n">wait_thread</span><span class="p">.</span><span class="nf">class</span>          <span class="c1"># =&gt; Process::Waiter</span>
+<span class="n">wait_thread</span><span class="p">.</span><span class="nf">value</span>          <span class="c1"># =&gt; #&lt;Process::Status: pid 41357 exit 0&gt;</span>
+<span class="n">wait_thread</span><span class="p">.</span><span class="nf">value</span><span class="p">.</span><span class="nf">success?</span> <span class="c1"># =&gt; true</span>
+</code></pre></div></div>
+
+<p>If the exit code is not success, make sure to clean up any partially uploaded files.</p>
+
+<h3 id="gotcha-2---forgetting-to-close-input-stream">Gotcha 2 - forgetting to close input stream</h3>
+
+<p>If you forget to call <code class="language-plaintext highlighter-rouge">stdin.close</code>, the fd will leak and can potentially stay alive for a long
+time (until a GC cycle or process exit). <code class="language-plaintext highlighter-rouge">pg_dump</code> never reads stdin, so here the unclosed pipe is
+only a leaked fd. But for a child that reads stdin (e.g. <code class="language-plaintext highlighter-rouge">psql</code> when you stream a restore), a
+forgotten <code class="language-plaintext highlighter-rouge">stdin.close</code> means it waits for EOF forever.</p>
+
+<p>A possible solution is to use <code class="language-plaintext highlighter-rouge">popen2</code> with a block. After the block executes, all streams are
+closed. Note this only prevents the fd leak — the streams are closed <em>after</em> the block runs, so for
+a child that reads stdin you’d still need an explicit <code class="language-plaintext highlighter-rouge">stdin.close</code> inside the block:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Open3</span><span class="p">.</span><span class="nf">popen2</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">stdin</span><span class="p">,</span> <span class="n">pg_dump_out</span><span class="p">,</span> <span class="n">wait_thread</span><span class="o">|</span>
+  <span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">pg_dump_out</span><span class="p">,</span> <span class="no">File</span><span class="o">::</span><span class="no">NULL</span><span class="p">)</span>
+
+  <span class="k">raise</span> <span class="k">unless</span> <span class="n">wait_thread</span><span class="p">.</span><span class="nf">value</span><span class="p">.</span><span class="nf">success?</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="gotcha-3---handling-stderr">Gotcha 3 - handling stderr</h3>
+
+<p>One drawback of <code class="language-plaintext highlighter-rouge">popen2</code> is that it doesn’t yield access to <code class="language-plaintext highlighter-rouge">stderr</code>. We can use <code class="language-plaintext highlighter-rouge">popen2e</code> but it
+merges <code class="language-plaintext highlighter-rouge">stderr</code> and <code class="language-plaintext highlighter-rouge">stdout</code>. As a result, any potential warnings would be added to the database dump. Oops.
+Alternatively, we could use <code class="language-plaintext highlighter-rouge">popen3</code> which yields <code class="language-plaintext highlighter-rouge">stderr</code> as a standalone object:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Open3</span><span class="p">.</span><span class="nf">popen3</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">wait_thread</span><span class="o">|</span>
+  <span class="n">transfer_manager</span><span class="p">.</span><span class="nf">upload_stream</span><span class="p">(</span><span class="n">bucket</span><span class="p">:,</span> <span class="n">key</span><span class="p">:)</span> <span class="k">do</span> <span class="o">|</span><span class="n">s3_stream</span><span class="o">|</span>
+    <span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">s3_stream</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">raise</span> <span class="s2">"pg_dump failed: </span><span class="si">#{</span><span class="n">stderr</span><span class="p">.</span><span class="nf">read</span><span class="si">}</span><span class="s2">"</span> <span class="k">unless</span> <span class="n">wait_thread</span><span class="p">.</span><span class="nf">value</span><span class="p">.</span><span class="nf">success?</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This snippet suffers from a fatal flaw - a deadlock. We now have two pipes and one main thread, and
+<code class="language-plaintext highlighter-rouge">pg_dump</code> is writing into both pipes at the same time. Each pipe’s buffer is ~64 KB and if
+<code class="language-plaintext highlighter-rouge">stderr</code>’s buffer fills before the <code class="language-plaintext highlighter-rouge">IO.copy_stream</code> command completes, <code class="language-plaintext highlighter-rouge">pg_dump</code> will block until
+<code class="language-plaintext highlighter-rouge">stderr</code> is consumed, but this doesn’t happen until we finish uploading.</p>
+
+<p>What we can do is consume <code class="language-plaintext highlighter-rouge">stderr</code> in a new thread so we can avoid a deadlock:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Open3</span><span class="p">.</span><span class="nf">popen3</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">wait_thread</span><span class="o">|</span>
+  <span class="n">error_thread</span> <span class="o">=</span> <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span> <span class="p">{</span> <span class="n">stderr</span><span class="p">.</span><span class="nf">read</span> <span class="p">}</span>
+
+  <span class="n">transfer_manager</span><span class="p">.</span><span class="nf">upload_stream</span><span class="p">(</span><span class="n">bucket</span><span class="p">:,</span> <span class="n">key</span><span class="p">:)</span> <span class="k">do</span> <span class="o">|</span><span class="n">s3_stream</span><span class="o">|</span>
+    <span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">s3_stream</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">raise</span> <span class="s2">"pg_dump failed: </span><span class="si">#{</span><span class="n">error_thread</span><span class="p">.</span><span class="nf">value</span><span class="si">}</span><span class="s2">"</span> <span class="k">unless</span> <span class="n">wait_thread</span><span class="p">.</span><span class="nf">value</span><span class="p">.</span><span class="nf">success?</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="gotcha-4---aws-s3-and-multipart-upload-limits">Gotcha 4 - AWS S3 and multipart upload limits</h3>
+
+<p>Looking at the documentation for
+<a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/TransferManager.html#upload_stream-instance_method"><code class="language-plaintext highlighter-rouge">upload_stream</code></a>
+reveals two options that are crucial when using this for large files:</p>
+
+<p><code class="language-plaintext highlighter-rouge">part_size</code> - default 5MiB (5 * 1024 * 1024) - This directly caps the maximum size of the
+uploaded file because <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html">S3 supports maximum 10 000 parts per
+upload</a>. With the default part
+size, we could upload a file up to 48.8 GiB. After the 10000th part, S3 will simply reject further
+<code class="language-plaintext highlighter-rouge">UploadPart</code> calls and the upload will fail. Max <code class="language-plaintext highlighter-rouge">part_size</code> is <code class="language-plaintext highlighter-rouge">5 GiB</code> which caps the actual max
+file size to <code class="language-plaintext highlighter-rouge">48.8 TiB</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">thread_count</code> - default 10 - Number of parallel multipart uploads. Directly contributes to memory
+usage. Peak memory is roughly <code class="language-plaintext highlighter-rouge">thread_count</code> * <code class="language-plaintext highlighter-rouge">part_size</code>. For the default (10 threads x 5MB)
+expect around 50-60MB memory usage.</p>
+
+<h3 id="full-example">Full example</h3>
+
+<p>With all gotchas taken into account, this is what the complete code looks like:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'open3'</span>
+<span class="nb">require</span> <span class="s1">'aws-sdk-s3'</span>
+
+<span class="no">CustomError</span> <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">StandardError</span><span class="p">)</span>
+
+<span class="n">bucket</span> <span class="o">=</span> <span class="s1">'bucket-name'</span>
+<span class="n">key</span> <span class="o">=</span> <span class="s1">'2026/06/06.dump'</span>
+<span class="n">client</span> <span class="o">=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">transfer_manager</span> <span class="o">=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">TransferManager</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">client</span><span class="p">:)</span>
+
+<span class="no">Open3</span><span class="p">.</span><span class="nf">popen3</span><span class="p">(</span><span class="s1">'pg_dump db_name'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">_</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">wait_thread</span><span class="o">|</span>
+  <span class="n">error_thread</span> <span class="o">=</span> <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span> <span class="p">{</span> <span class="n">stderr</span><span class="p">.</span><span class="nf">read</span> <span class="p">}</span>
+  <span class="n">bytes</span> <span class="o">=</span> <span class="mi">0</span>
+
+  <span class="n">transfer_manager</span><span class="p">.</span><span class="nf">upload_stream</span><span class="p">(</span><span class="n">bucket</span><span class="p">:,</span> <span class="n">key</span><span class="p">:,</span> <span class="ss">part_size: </span><span class="mi">128</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span> <span class="ss">thread_count: </span><span class="mi">4</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">s3_stream</span><span class="o">|</span>
+    <span class="n">bytes</span> <span class="o">=</span> <span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">s3_stream</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">raise</span> <span class="no">CustomError</span><span class="p">,</span> <span class="s2">"pg_dump failed: </span><span class="si">#{</span><span class="n">error_thread</span><span class="p">.</span><span class="nf">value</span><span class="si">}</span><span class="s2">"</span> <span class="k">unless</span> <span class="n">wait_thread</span><span class="p">.</span><span class="nf">value</span><span class="p">.</span><span class="nf">success?</span>
+
+  <span class="nb">puts</span> <span class="s2">"Uploaded </span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="n">bucket</span><span class="si">}</span><span class="s2">. Final size: </span><span class="si">#{</span><span class="n">bytes</span><span class="si">}</span><span class="s2"> bytes"</span>
+<span class="k">rescue</span> <span class="no">CustomError</span> <span class="o">=&gt;</span> <span class="n">e</span>
+  <span class="n">client</span><span class="p">.</span><span class="nf">delete_object</span><span class="p">(</span><span class="n">bucket</span><span class="p">:,</span> <span class="n">key</span><span class="p">:)</span>
+  <span class="c1"># possibly re-raise or alert</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="advanced-progress-reporting">Advanced: progress reporting</h3>
+
+<p>With big files, it can take a while until they are uploaded. This is why having a simple progress
+indicator goes a long way. I like using <a href="https://linux.die.net/man/1/pv"><code class="language-plaintext highlighter-rouge">pv</code></a> in similar
+situations. Output can be piped into it and it will pipe it out while providing some visibility
+into the progress:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pg_dump large_database | pv <span class="nt">-btra</span> <span class="o">&gt;</span> dump.sql
+<span class="c"># =&gt; 1.46GiB 0:00:15 [99.2MiB/s] (99.2MiB/s)</span>
+</code></pre></div></div>
+
+<p>This is a bit awkward to do with just <code class="language-plaintext highlighter-rouge">popen3</code> but we can use another method provided by <code class="language-plaintext highlighter-rouge">Open3</code> -
+<a href="https://docs.ruby-lang.org/en/master/Open3.html#method-i-pipeline_r"><code class="language-plaintext highlighter-rouge">pipeline_r</code></a>. This is the
+bigger brother of <a href="https://docs.ruby-lang.org/en/master/Open3.html#method-i-pipeline"><code class="language-plaintext highlighter-rouge">pipeline</code></a>,
+which receives a list of command and pipes them similar the shell example above. <code class="language-plaintext highlighter-rouge">pipeline</code> returns
+an array with the process status objects of each command in the list and prints everything to stdout:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">statuses</span> <span class="o">=</span> <span class="no">Open3</span><span class="p">.</span><span class="nf">pipeline</span><span class="p">(</span><span class="s1">'ls'</span><span class="p">,</span> <span class="s1">'grep R'</span><span class="p">)</span>
+<span class="n">statuses</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:success?</span><span class="p">)</span>
+<span class="c1"># =&gt; [true, true]</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">pipeline_r</code> also yields the captured stdout of the last command in the list:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Open3</span><span class="p">.</span><span class="nf">pipeline_r</span><span class="p">(</span><span class="s1">'ls'</span><span class="p">,</span> <span class="s1">'grep R'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">last_stdout</span><span class="p">,</span> <span class="n">wait_threads</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="n">last_stdout</span><span class="p">.</span><span class="nf">read</span>
+<span class="k">end</span>
+<span class="c1"># =&gt; Rakefile</span>
+<span class="c1"># =&gt; README.md</span>
+</code></pre></div></div>
+
+<p>We can use it to pipe <code class="language-plaintext highlighter-rouge">pg_dump</code> into <code class="language-plaintext highlighter-rouge">pv</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">commands</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">[</span><span class="s2">"pg_dump"</span><span class="p">,</span> <span class="s2">"db_name"</span><span class="p">],</span>
+  <span class="p">[</span><span class="s2">"pv"</span><span class="p">,</span> <span class="s2">"-btra"</span><span class="p">]</span>
+<span class="p">]</span>
+
+<span class="no">Open3</span><span class="p">.</span><span class="nf">pipeline_r</span><span class="p">(</span><span class="o">*</span><span class="n">commands</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">dump_out</span><span class="p">,</span> <span class="n">wait_threads</span><span class="o">|</span>
+  <span class="n">transfer_manager</span><span class="p">.</span><span class="nf">upload_stream</span><span class="p">(</span><span class="n">bucket</span><span class="p">:,</span> <span class="n">key</span><span class="p">:)</span> <span class="k">do</span> <span class="o">|</span><span class="n">s3_stream</span><span class="o">|</span>
+    <span class="no">IO</span><span class="p">.</span><span class="nf">copy_stream</span><span class="p">(</span><span class="n">dump_out</span><span class="p">,</span> <span class="n">s3_stream</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">raise</span> <span class="s2">"pipeline failed"</span> <span class="k">unless</span> <span class="n">wait_threads</span><span class="p">.</span><span class="nf">all?</span> <span class="p">{</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span> <span class="n">t</span><span class="p">.</span><span class="nf">value</span><span class="p">.</span><span class="nf">success?</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The result will be the same but we’ll get a nice looking progress indicator while the file is being
+uploaded.</p>
+
+<p>This approach is also very useful if, for example, we want to encrypt the file with <code class="language-plaintext highlighter-rouge">openssl</code>
+before upload.</p>]]></content><author><name>Georgi Mitrev</name></author><category term="ruby" /><summary type="html"><![CDATA[When I started working on boring-backup, I wanted to make the process of backing up a PostgreSQL database as frictionless as possible. In my vision, all you had to do was execute bundle add boring-backup, provide an S3 bucket and AWS credentials and maybe setup a slack webhook. Backups would then be executed in a background worker or manually with a cron.]]></summary></entry><entry><title type="html">TIL: :restrict_with_error</title><link href="https://mitrev.net/rails/2026/07/06/til-restrict-with-error/" rel="alternate" type="text/html" title="TIL: :restrict_with_error" /><published>2026-07-06T20:52:00+00:00</published><updated>2026-07-06T20:52:00+00:00</updated><id>https://mitrev.net/rails/2026/07/06/til-restrict-with-error</id><content type="html" xml:base="https://mitrev.net/rails/2026/07/06/til-restrict-with-error/"><![CDATA[<p>I’ve been using Rails for 15+ years and I still find useful stuff that I didn’t know about.</p>
+
+<p>This week, my discovery is the <code class="language-plaintext highlighter-rouge">restrict_with_error</code> option for the <code class="language-plaintext highlighter-rouge">has_one</code> and <code class="language-plaintext highlighter-rouge">has_many</code>
+<code class="language-plaintext highlighter-rouge">:dependent</code> setting.</p>
+
+<h2 id="example">Example</h2>
+
+<p>I developed a tiny workout tracking application which has an <code class="language-plaintext highlighter-rouge">Exercise</code> model. This is stuff like
+“Squat” or “Deadlift”. Every workout session consists of multiple <code class="language-plaintext highlighter-rouge">WorkoutExercise</code> objects,
+which record a concrete session of that <code class="language-plaintext highlighter-rouge">Exercise</code> being used in a workout.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">WorkoutExercise</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">belongs_to</span> <span class="ss">:workout</span>
+
+  <span class="n">has_many</span> <span class="ss">:sets</span> <span class="c1"># and sets have reps</span>
+<span class="k">end</span>
+
+</code></pre></div></div>
+
+<p>The question is what happens when I decide to delete an <code class="language-plaintext highlighter-rouge">Exercise</code>. Previously, I would manually
+write a <code class="language-plaintext highlighter-rouge">before_destroy</code> callback to check if an <code class="language-plaintext highlighter-rouge">Exercise</code> has been used in any workouts and prevent
+it from being deleted. Turns out this has been  baked into the <code class="language-plaintext highlighter-rouge">has_one</code>
+and <code class="language-plaintext highlighter-rouge">has_many</code> methods ever since Rails 4 in 2013:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Exercise</span>
+  <span class="n">has_many</span> <span class="ss">:workout_exercises</span><span class="p">,</span> <span class="ss">dependent: :restrict_with_error</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>With this, attempting to delete an exercise that is already referenced by exiting Workouts shows a nice error on the <code class="language-plaintext highlighter-rouge">exercise</code> object:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">e</span> <span class="o">=</span> <span class="no">Exercise</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># =&gt; #&lt;Exercise:0x0000000109d4ded8&gt;</span>
+
+<span class="n">e</span><span class="p">.</span><span class="nf">name</span>
+<span class="c1"># =&gt; "Squat"</span>
+
+<span class="n">e</span><span class="p">.</span><span class="nf">destroy</span>
+<span class="c1"># =&gt; false</span>
+
+<span class="n">e</span><span class="p">.</span><span class="nf">errors</span>
+<span class="c1"># =&gt; #&lt;ActiveModel::Errors [#&lt;ActiveModel::Error attribute=base, type=restrict_dependent_destroy.has_many, options={:record=&gt;"workout exercises"}&gt;]&gt;</span>
+
+<span class="n">e</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">full_messages</span>
+<span class="c1"># =&gt; ["Cannot delete record because dependent workout exercises exist"]</span>
+</code></pre></div></div>
+
+<p>This is much nicer and elegant than having to roll a custom validation.</p>
+
+<p>There’s also <code class="language-plaintext highlighter-rouge">:restrict_with_exception</code>, which raises an exception instead of adding validation
+errors to the object.</p>]]></content><author><name>Georgi Mitrev</name></author><category term="rails" /><summary type="html"><![CDATA[I’ve been using Rails for 15+ years and I still find useful stuff that I didn’t know about.]]></summary></entry><entry><title type="html">Simple lightbox with just a little JS and CSS</title><link href="https://mitrev.net/2026/06/03/simple-lightbox-with-just-a-little-js-and-css/" rel="alternate" type="text/html" title="Simple lightbox with just a little JS and CSS" /><published>2026-06-03T21:46:00+00:00</published><updated>2026-06-03T21:46:00+00:00</updated><id>https://mitrev.net/2026/06/03/simple-lightbox-with-just-a-little-js-and-css</id><content type="html" xml:base="https://mitrev.net/2026/06/03/simple-lightbox-with-just-a-little-js-and-css/"><![CDATA[<p>The <a href="/projects" target="_blank">/projects</a> page includes screenshots of my projects but
+clicking them used to simply redirect to the project URL. This has always bugged me, but I didn’t
+want to add a dedicated lightbox library as I hate adding unnecessary libraries to projects.</p>
+
+<p>I figured there must be an easy way to do it with just CSS + simple JS and it turns out, there is!</p>
+
+<h3 id="dialog">&lt;<span class="font-monospace">dialog</span>&gt;</h3>
+
+<p>The first part of the puzzle is the <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog"><code class="language-plaintext highlighter-rouge">&lt;dialog&gt;</code></a> element.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dialog&gt;</span>
+  <span class="nt">&lt;h1&gt;</span>This is my modal<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;/dialog&gt;</span>
+</code></pre></div></div>
+
+<p>It’s used to represent modals and non-modal dialog boxes, which is exactly what we need.</p>]]></content><author><name>Georgi Mitrev</name></author><summary type="html"><![CDATA[The /projects page includes screenshots of my projects but clicking them used to simply redirect to the project URL. This has always bugged me, but I didn’t want to add a dedicated lightbox library as I hate adding unnecessary libraries to projects.]]></summary></entry><entry><title type="html">Managing Ruby versions with Mise</title><link href="https://mitrev.net/2026/06/03/mise-ruby-rails/" rel="alternate" type="text/html" title="Managing Ruby versions with Mise" /><published>2026-06-03T15:10:00+00:00</published><updated>2026-06-03T15:10:00+00:00</updated><id>https://mitrev.net/2026/06/03/mise-ruby-rails</id><content type="html" xml:base="https://mitrev.net/2026/06/03/mise-ruby-rails/"><![CDATA[<p>I’ve been using <a href="https://github.com/postmodern/chruby">chruby</a> for years now but one thing I’ve
+always disliked is having to compile Ruby when installing new versions. This is now not needed when
+using <a href="https://mise.jdx.dev/lang/ruby.html#precompiled-binaries">mise</a>, which can just download
+precompiled Ruby binaries on some platforms.</p>
+
+<h2 id="what-is-mise">What is mise</h2>
+
+<p><code class="language-plaintext highlighter-rouge">mise</code> is a tool to manage runtime versions in your projects. Instead of using <code class="language-plaintext highlighter-rouge">chruby</code> and <code class="language-plaintext highlighter-rouge">nvm</code> to
+manage Ruby and Node, we can just use <code class="language-plaintext highlighter-rouge">mise</code> for both. It has other features as well but these are
+not important right now. Read the docs for <a href="https://mise.jdx.dev/getting-started.html">installation instructions</a>.</p>
+
+<p>After installing, disable the <code class="language-plaintext highlighter-rouge">ruby.compile</code> setting:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mise settings ruby.compile<span class="o">=</span><span class="nb">false</span> <span class="c"># This will soon be default</span>
+</code></pre></div></div>
+
+<p>This tells <code class="language-plaintext highlighter-rouge">mise</code> to download a precompiled version if available. If not,
+<a href="https://github.com/rbenv/ruby-build">ruby-build</a> will be used to compile the desired Ruby version.</p>
+
+<h2 id="how-to-set-it-up-in-ruby-projects">How to set it up in Ruby projects</h2>
+
+<p><code class="language-plaintext highlighter-rouge">mise</code> can be used without meddling with your PATH by just invoking it directly:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mise <span class="nb">exec </span>ruby@3.4.5 <span class="nt">--</span> ruby <span class="nt">-v</span>
+</code></pre></div></div>
+
+<p>This will install Ruby 3.4.5 if not installed and will invoke <code class="language-plaintext highlighter-rouge">ruby -v</code>.</p>
+
+<p>Using <code class="language-plaintext highlighter-rouge">mise exec</code> every time would be rather annoying and <code class="language-plaintext highlighter-rouge">mise</code> can be configured to automatically
+activate in interactive shells:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mise activate
+</code></pre></div></div>
+
+<p>This produces a shell script that you can <a href="https://mise.jdx.dev/getting-started.html#activate-mise">put in <code class="language-plaintext highlighter-rouge">.bashrc</code> or
+<code class="language-plaintext highlighter-rouge">.zshrc</code></a> and new shells will now
+automatically activate whatever tools you need:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="s1">'eval "$(mise activate zsh)"'</span> <span class="o">&gt;&gt;</span> ~/.zshrc
+</code></pre></div></div>
+
+<p>If you have an existing <code class="language-plaintext highlighter-rouge">~/.tool-versions</code> file, <code class="language-plaintext highlighter-rouge">mise use</code> will by default set the global version
+there. In order to scope the version to the current project, pass the <code class="language-plaintext highlighter-rouge">--path</code> option:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mise use <span class="nt">--path</span> mise.toml ruby@3.4.5 node@24
+</code></pre></div></div>
+
+<p>This will install both Ruby 3.4.5 and Node 24. It will also create the <code class="language-plaintext highlighter-rouge">mise.toml</code> file:</p>
+
+<div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">[</span><span class="n">tools</span><span class="k">]</span>
+<span class="n">node</span> <span class="o">=</span><span class="w"> </span><span class="s">"24"</span>
+<span class="n">ruby</span> <span class="o">=</span><span class="w"> </span><span class="s">"3.4.5"</span>
+</code></pre></div></div>
+
+<p>Make sure to commit this file.</p>
+
+<p>This is all you need for now. Remember to remove your previous version managers to avoid conflicts.
+Also, it’s a good idea to remove <code class="language-plaintext highlighter-rouge">node_modules</code> and install gems again.</p>
+
+<h2 id="setting-a-global-version">Setting a global version</h2>
+
+<p>Use the <code class="language-plaintext highlighter-rouge">--global</code> (<code class="language-plaintext highlighter-rouge">-g</code>) flag to set a global version:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mise use <span class="nt">-g</span> ruby@4.0.5
+</code></pre></div></div>]]></content><author><name>Georgi Mitrev</name></author><summary type="html"><![CDATA[I’ve been using chruby for years now but one thing I’ve always disliked is having to compile Ruby when installing new versions. This is now not needed when using mise, which can just download precompiled Ruby binaries on some platforms.]]></summary></entry><entry><title type="html">Running a Rails app from your home</title><link href="https://mitrev.net/ruby/2023/03/29/rails-on-rpi/" rel="alternate" type="text/html" title="Running a Rails app from your home" /><published>2023-03-29T18:03:00+00:00</published><updated>2023-03-29T18:03:00+00:00</updated><id>https://mitrev.net/ruby/2023/03/29/rails-on-rpi</id><content type="html" xml:base="https://mitrev.net/ruby/2023/03/29/rails-on-rpi/"><![CDATA[<p>You should never run any serious applications from your local network. Never ever allow public
+access into your home network. If you absolutely must, use a VPN. But if you like to live
+dangerously, read on.</p>
+
+<p>This post is mostly documentation for my future self. I have a small private application that I
+want to be able to access even when I’m not home. It’s not that important so that I want to pay
+for a VPS and as I have some spare RaspberryPIs, I decided to finally use them for something.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<ul class="list-disc">
+  <li>
+    A computer within a private network without a static IPv4 address. In this case, a RaspberryPI.
+  </li>
+  <li>
+    A VPS with a static IPv4 address, used only as a jump-off point.
+  </li>
+</ul>
+
+<h2 id="overview">Overview</h2>
+
+<p>The first step is to deploy the application to the RaspberryPI. There are a lot of ways to do it - I prefer using capistrano and will document it in a follow-up post. Our app can be served on
+any port and in our case this will be <code class="language-plaintext highlighter-rouge">80</code>.</p>
+
+<p>The second step is to set up your domain with your public VPS. Create an
+<code class="language-plaintext highlighter-rouge">A</code> DNS record that points to its IPv4.</p>
+
+<p>For proxying the traffic between the two machines, we’ll use <a href="https://github.com/fatedier/frp" target="_blank">FRP</a>. FRP is a reverse proxy that’s
+designed for exposing local services to the Internet. You can also use it to create a service
+similar to ngrok if you need to expose your development servers to the Internet. This is
+particularly useful if you need to test webhooks or oAuth integration with a third-party API.</p>
+
+<p>FRP has a server and a client component that are part of the same package. We’ll run an FRP
+server on the VPS and the FRP client on our RaspberryPI.</p>
+
+<h2 id="setting-up-the-frp-server">Setting up the FRP server</h2>
+
+<p>Start by installing <code class="language-plaintext highlighter-rouge">FRP</code> on your VPS. We’ll put the executables in our home folder. <code class="language-plaintext highlighter-rouge">FRP</code> needs a
+simple config file that tells it on what port it will receive the requests and a second port that
+will be used by the FRP client. Place the <code class="language-plaintext highlighter-rouge">frps.ini</code> in the home directory as well
+with the following contents:</p>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[common]</span><span class="w">
+</span><span class="c">; this is the port where the FRP client will connect to the FRP server
+</span><span class="py">bind_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">7000</span>
+<span class="w">
+</span><span class="c">; this is where we'll proxy the requests from our server
+</span><span class="py">vhost_http_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">8080</span>
+</code></pre></div></div>
+
+<p>Start the FRP server by running the following command in the shell:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>frps <span class="nt">-c</span> frps.ini
+</code></pre></div></div>
+
+<p>Running it in the shell is a good way to test things out but ultimately we want the run the server
+in a more-robust (robuster?) way.</p>
+
+<h3 id="manage-the-frp-server-with-systemd">Manage the FRP server with systemd</h3>
+
+<p><code class="language-plaintext highlighter-rouge">systemd</code> is the standard way to run services on UNIX machines. Start by creating a service file
+for our server in <code class="language-plaintext highlighter-rouge">/etc/systemd/system/frps.service</code>:</p>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Unit]</span><span class="w">
+</span><span class="py">Description</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">frp server</span>
+<span class="py">After</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">network.target syslog.target</span>
+<span class="py">Wants</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">network.target</span>
+<span class="w">
+</span><span class="nn">[Service]</span><span class="w">
+</span><span class="py">Type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">simple</span>
+<span class="py">ExecStart</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">/home/deploy/frps -c /home/deploy/frps.ini</span>
+<span class="py">Restart</span><span class="p">=</span><span class="s">always</span>
+<span class="py">RestartSec</span><span class="p">=</span><span class="s">3</span>
+<span class="py">TimeoutStartSec</span><span class="p">=</span><span class="s">300</span>
+<span class="py">TimeoutStopSec</span><span class="p">=</span><span class="s">Infinity</span>
+<span class="w">
+</span><span class="nn">[Install]</span><span class="w">
+</span><span class="py">WantedBy</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">multi-user.target</span>
+</code></pre></div></div>
+
+<p>Enable the service and start it by executing the following commands:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl <span class="nb">enable </span>frps.service
+systemctl start frps.service
+</code></pre></div></div>
+
+<p>Use <code class="language-plaintext highlighter-rouge">sudo</code> if your current user doesn’t have the necessary permissions. If all is good, the FRP
+server will be started on machine boot and will be restarted automatically if it fails for any
+reason.</p>
+
+<p>Next, we’ll tell our web server (nginx) to proxy incoming requests to the FRP server.</p>
+
+<h3 id="setting-up-nginx">Setting up nginx</h3>
+
+<p>You can use any other web server as long as it can proxy requests to a unix socket or a different
+port. Nginx is great for this use-case and we’ll use it here.</p>
+
+<p>After installing nginx, we need to set it up to proxy incoming requests to the FRP server. Create a
+file in the <code class="language-plaintext highlighter-rouge">/etc/nginx/sites-enabled</code> folder with the following contents:</p>
+
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># /etc/nginx/sites-enabled/example</span>
+
+<span class="k">server</span> <span class="p">{</span>
+  <span class="kn">listen</span> <span class="mi">80</span><span class="p">;</span>
+  <span class="kn">listen</span> <span class="mi">443</span><span class="p">;</span>
+  <span class="kn">listen</span> <span class="s">[::]:80</span><span class="p">;</span>
+
+  <span class="kn">server_name</span> <span class="s">example.net</span><span class="p">;</span>
+
+  <span class="kn">location</span> <span class="n">/</span> <span class="p">{</span>
+    <span class="kn">proxy_pass</span> <span class="s">http://0.0.0.0:8080</span><span class="p">;</span>
+    <span class="kn">proxy_set_header</span> <span class="s">Host</span> <span class="nv">$host</span><span class="p">;</span>
+    <span class="kn">proxy_set_header</span> <span class="s">X-Real-IP</span> <span class="nv">$remote_addr</span><span class="p">;</span>
+    <span class="kn">proxy_set_header</span> <span class="s">X-Forwarded-For</span> <span class="nv">$proxy_add_x_forwarded_for</span><span class="p">;</span>
+    <span class="kn">proxy_set_header</span> <span class="s">REMOTE-HOST</span> <span class="nv">$remote_addr</span><span class="p">;</span>
+    <span class="kn">proxy_set_header</span> <span class="s">origin</span> <span class="s">'http://example.net'</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Make sure to point the <code class="language-plaintext highlighter-rouge">proxy_pass</code> directive to the same port we defined in the <code class="language-plaintext highlighter-rouge">frps.ini</code> file
+above with the <code class="language-plaintext highlighter-rouge">vhost_http_port</code> line - <code class="language-plaintext highlighter-rouge">8080</code> in our case.</p>
+
+<p>At this point, we may need to reload <code class="language-plaintext highlighter-rouge">nginx</code> for the changes to take effect:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl reload nginx.service
+</code></pre></div></div>
+
+<p>This is all we need to set up on the VPS.</p>
+
+<h2 id="setting-up-the-frp-server-1">Setting up the FRP server</h2>
+
+<p>Next, we’ll jump over to the RaspberryPI for the rest of the setup. Install <code class="language-plaintext highlighter-rouge">FRP</code> and
+create the client configuration file <code class="language-plaintext highlighter-rouge">/home/deploy/frps.ini</code>:</p>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[common]</span><span class="w">
+</span><span class="c">; The public IP of our VPS
+</span><span class="py">server_addr</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">x.x.x.x</span>
+<span class="w">
+</span><span class="c">; The port of the FRP server we defined as `bind_port` in the server configuration
+</span><span class="py">server_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">7000</span>
+<span class="w">
+</span><span class="nn">[web]</span><span class="w">
+</span><span class="py">type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">http</span>
+<span class="w">
+</span><span class="c">; The port of our local web server where we serve the Rails application
+</span><span class="py">local_port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">80</span>
+<span class="py">custom_domains</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">example.net</span>
+</code></pre></div></div>
+
+<p>Same as on the VPS, we’ll use <code class="language-plaintext highlighter-rouge">systemd</code> to manage the FRP client. Create
+<code class="language-plaintext highlighter-rouge">/etc/systemd/system/frpc.service</code> with the following contents:</p>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Unit]</span><span class="w">
+</span><span class="py">Description</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">frp client</span>
+<span class="py">After</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">network.target syslog.target</span>
+<span class="py">Wants</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">network.target</span>
+<span class="w">
+</span><span class="nn">[Service]</span><span class="w">
+</span><span class="py">Type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">simple</span>
+<span class="py">ExecStart</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">/home/deploy/frpc -c /home/deploy/frpc.ini</span>
+<span class="py">Restart</span><span class="p">=</span><span class="s">always</span>
+<span class="py">RestartSec</span><span class="p">=</span><span class="s">3</span>
+<span class="w">
+</span><span class="nn">[Install]</span><span class="w">
+</span><span class="py">WantedBy</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">multi-user.target</span>
+</code></pre></div></div>
+
+<p>Note that we use <code class="language-plaintext highlighter-rouge">frpc</code> for the client and <code class="language-plaintext highlighter-rouge">frps</code> for the server. Not that I messed them up one too
+many times 😬.</p>
+
+<p>Again, enable and start the service:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl <span class="nb">enable </span>frpc.service
+systemctl start frpc.service
+</code></pre></div></div>
+
+<p>If you set up your Rails application properly, it will now start receiving traffic from your domain
+:). A common mistake is making sure the app is aware of the public host (e.g. <code class="language-plaintext highlighter-rouge">example.net</code>). If
+you want to use SSL, you’ll need to make some minor changes to the config files and expand your
+nginx config but this is out of the scope here.</p>
+
+<p>You may have noticed that there’s nothing Rails-specific about this. You are correct! My plan is to
+write a couple more posts that go into the spefics on how to deploy and serve a Rails application
+in the simplest way possible and this will tie in nicely with them.</p>]]></content><author><name>Georgi Mitrev</name></author><category term="ruby" /><summary type="html"><![CDATA[You should never run any serious applications from your local network. Never ever allow public access into your home network. If you absolutely must, use a VPN. But if you like to live dangerously, read on.]]></summary></entry><entry><title type="html">Yanking Webpacker out of Rails (6)</title><link href="https://mitrev.net/ruby/2019/12/27/rails-6-without-webpack/" rel="alternate" type="text/html" title="Yanking Webpacker out of Rails (6)" /><published>2019-12-27T23:30:00+00:00</published><updated>2019-12-27T23:30:00+00:00</updated><id>https://mitrev.net/ruby/2019/12/27/rails-6-without-webpack</id><content type="html" xml:base="https://mitrev.net/ruby/2019/12/27/rails-6-without-webpack/"><![CDATA[<p>Call me a grumpy old man but I find webpack(er) to be a major pain in the ass. It overcomplicates
+things and turns (previously) simple tasks such as installing bootstrap into a nightmare. This is
+why I prefer not to use it for small personal projects.</p>
+
+<p>Yes, it might be better for js-centric apps but not everyone makes SPAs. This post will explain how
+to remove <code class="language-plaintext highlighter-rouge">webpacker</code> and add javascript back to the sprockets pipeline.</p>
+
+<p>Sadly, we can’t simply use <code class="language-plaintext highlighter-rouge">rails new --skip-webpack</code> and call it a day. There is some manual work
+involved. Also, a warning: it will be harder to use newer Rails 6 features such as Action Text.</p>
+
+<h2 id="creating-a-new-application">Creating a new application</h2>
+
+<p>When creating a new application, you can supply two flags that prevent <code class="language-plaintext highlighter-rouge">webpacker</code> from being
+installed. The first is <code class="language-plaintext highlighter-rouge">--skip-webpack-install</code> which prevents the generator from running <code class="language-plaintext highlighter-rouge">rails
+webpacker:install</code>. The second is <code class="language-plaintext highlighter-rouge">--skip-javascript</code>, which drops the <code class="language-plaintext highlighter-rouge">webpacker</code> gem from the
+Gemfile. The final command is:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rails new app-name <span class="nt">--skip-webpack-install</span> <span class="nt">--skip-javascript</span>
+</code></pre></div></div>
+
+<h2 id="adding-javascript-to-the-sprockets-pipeline">Adding javascript to the sprockets pipeline</h2>
+
+<p>You will find that the <code class="language-plaintext highlighter-rouge">app/assets/javascripts</code> folder no longer exists. Create it by running the
+following command in your shell:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> app/assets/javascripts
+</code></pre></div></div>
+
+<p>Then, create <code class="language-plaintext highlighter-rouge">app/assets/javascripts/application.js</code> with the following contents (taken from a
+Rails 5 app):</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="sr">//</span><span class="o">=</span> <span class="nb">require</span> <span class="n">rails</span><span class="o">-</span><span class="n">ujs</span>
+<span class="sr">//</span><span class="o">=</span> <span class="nb">require</span> <span class="n">turbolinks</span>
+<span class="sr">//</span><span class="o">=</span> <span class="n">require_tree</span> <span class="o">.</span>
+</code></pre></div></div>
+
+<p><em>Note</em>: If you want to use ActionCable, you can also copy a pristine <code class="language-plaintext highlighter-rouge">cable.js</code> from a Rails 5 application.</p>
+
+<p>Next, open <code class="language-plaintext highlighter-rouge">app/assets/config/manifest.js</code> and <a href="https://github.com/rails/sprockets/blob/master/UPGRADING.md#manifestjs">add the following
+line</a>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">...</span>
+
+<span class="sr">//</span><span class="o">=</span> <span class="n">link_directory</span> <span class="o">..</span><span class="sr">/javascripts .js
+</span></code></pre></div></div>
+
+<p>Finally, open you application layout (<code class="language-plaintext highlighter-rouge">app/views/layouts/application.html.erb</code>) and add the
+following line:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="sx">%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %&gt;
+</span></code></pre></div></div>
+
+<p>Also, remove lines with <code class="language-plaintext highlighter-rouge">javascript_pack_tag</code> if there are any. You’re done.</p>
+
+<h2 id="disclaimer">Disclaimer</h2>
+
+<p>Webpacker is the future and being ignorant with regard to how it works is probably not a good idea.
+I strongly urge everyone to learn how to use it properly. Still, being quite a new feature
+(introduced in Rails 6), the tooling and general knowledge base related to it are still quite
+limited.
+This is why I generally avoid it for personal projects, where I don’t want to spend an
+hour trying to setup <code class="language-plaintext highlighter-rouge">bootstrap</code> when it should not take me more than a couple of minutes.</p>]]></content><author><name>Georgi Mitrev</name></author><category term="ruby" /><summary type="html"><![CDATA[Call me a grumpy old man but I find webpack(er) to be a major pain in the ass. It overcomplicates things and turns (previously) simple tasks such as installing bootstrap into a nightmare. This is why I prefer not to use it for small personal projects.]]></summary></entry><entry><title type="html">The Safe Navigation Operator (&amp;amp;.) in Ruby</title><link href="https://mitrev.net/ruby/2015/11/13/the-operator-in-ruby/" rel="alternate" type="text/html" title="The Safe Navigation Operator (&amp;amp;.) in Ruby" /><published>2015-11-13T00:00:00+00:00</published><updated>2015-11-13T00:00:00+00:00</updated><id>https://mitrev.net/ruby/2015/11/13/the-operator-in-ruby</id><content type="html" xml:base="https://mitrev.net/ruby/2015/11/13/the-operator-in-ruby/"><![CDATA[<p>The most interesting addition to Ruby 2.3.0 is the Safe Navigation Operator(<code class="language-plaintext highlighter-rouge">&amp;.</code>). A similar
+operator has been present in C# and Groovy for a long time with a slightly different syntax - <code class="language-plaintext highlighter-rouge">?.</code>.
+So what does it do?</p>
+
+<h4 id="tldr">TLDR</h4>
+
+<p>It is used for avoiding <code class="language-plaintext highlighter-rouge">NoMethodError</code> exceptions when calling methods on objects that <em>may</em> be
+<code class="language-plaintext highlighter-rouge">nil</code>.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span> <span class="o">=</span> <span class="kp">nil</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">number</span>
+<span class="c1"># =&gt; NoMethodError (undefined method `number' for nil:NilClass)`)</span>
+
+<span class="n">account</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">number</span>
+<span class="c1"># =&gt; nil</span>
+</code></pre></div></div>
+
+<h2 id="example">Example</h2>
+
+<p>Imagine you have an <code class="language-plaintext highlighter-rouge">account</code> that has an <code class="language-plaintext highlighter-rouge">owner</code> and you want to get the <code class="language-plaintext highlighter-rouge">owner</code>’s <code class="language-plaintext highlighter-rouge">address</code>. If
+you want to be safe and not risk a <code class="language-plaintext highlighter-rouge">nil</code> error, you would write something like the following:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">account</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="o">...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This is really verbose and annoying to type. ActiveSupport includes the <code class="language-plaintext highlighter-rouge">try</code> method which has a
+similar behaviour (but with few key differences that will be discussed later):</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">account</span><span class="p">.</span><span class="nf">try</span><span class="p">(</span><span class="ss">:owner</span><span class="p">).</span><span class="nf">try</span><span class="p">(</span><span class="ss">:address</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>It accomplishes the same thing - it either returns the address or <code class="language-plaintext highlighter-rouge">nil</code> if some value along the
+chain is <code class="language-plaintext highlighter-rouge">nil</code>. The first example may also return <code class="language-plaintext highlighter-rouge">false</code> if, for example, the <code class="language-plaintext highlighter-rouge">owner</code> is set to
+<code class="language-plaintext highlighter-rouge">false</code>.</p>
+
+<h2 id="using-the-safe-navigation-operator-">Using the safe navigation operator (&amp;.)</h2>
+
+<p>We can rewrite the previous example using the safe navigation operator:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">owner</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">address</span>
+</code></pre></div></div>
+
+<p>The syntax is a bit awkward but I guess we will have to deal with it because it does make the code
+more compact.</p>
+
+<h3 id="more-examples">More examples</h3>
+
+<p>Let’s compare all three approaches in more detail.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span> <span class="o">=</span> <span class="no">Account</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">owner: </span><span class="kp">nil</span><span class="p">)</span> <span class="c1"># account without an owner</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; NoMethodError: undefined method `address' for nil:NilClass</span>
+
+<span class="n">account</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; nil</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">try</span><span class="p">(</span><span class="ss">:owner</span><span class="p">).</span><span class="nf">try</span><span class="p">(</span><span class="ss">:address</span><span class="p">)</span>
+<span class="c1"># =&gt; nil</span>
+
+<span class="n">account</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">owner</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; nil</span>
+</code></pre></div></div>
+
+<p>No surprises so far. What if <code class="language-plaintext highlighter-rouge">owner</code> is <code class="language-plaintext highlighter-rouge">false</code> (unlikely but not impossible in the exciting world
+of shitty code)?</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span> <span class="o">=</span> <span class="no">Account</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">owner: </span><span class="kp">false</span><span class="p">)</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; NoMethodError: undefined method `address' for false:FalseClass j</span>
+
+<span class="n">account</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; false</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">try</span><span class="p">(</span><span class="ss">:owner</span><span class="p">).</span><span class="nf">try</span><span class="p">(</span><span class="ss">:address</span><span class="p">)</span>
+<span class="c1"># =&gt; nil</span>
+
+<span class="n">account</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">owner</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; undefined method `address' for false:FalseClass`</span>
+</code></pre></div></div>
+
+<p>Here comes the first surprise - the <code class="language-plaintext highlighter-rouge">&amp;.</code> syntax only skips <code class="language-plaintext highlighter-rouge">nil</code> but recognizes <code class="language-plaintext highlighter-rouge">false</code>! It is not
+exactly equivalent to the <code class="language-plaintext highlighter-rouge">s1 &amp;&amp; s1.s2 &amp;&amp; s1.s2.s3</code> syntax.</p>
+
+<p>What if the owner is present but doesn’t respond to <code class="language-plaintext highlighter-rouge">address</code>?</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span> <span class="o">=</span> <span class="no">Account</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">owner: </span><span class="no">Object</span><span class="p">.</span><span class="nf">new</span><span class="p">)</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; NoMethodError: undefined method `address' for #&lt;Object:0x00559996b5bde8&gt;</span>
+
+<span class="n">account</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span> <span class="o">&amp;&amp;</span> <span class="n">account</span><span class="p">.</span><span class="nf">owner</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; NoMethodError: undefined method `address' for #&lt;Object:0x00559996b5bde8&gt;`</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">try</span><span class="p">(</span><span class="ss">:owner</span><span class="p">).</span><span class="nf">try</span><span class="p">(</span><span class="ss">:address</span><span class="p">)</span>
+<span class="c1"># =&gt; nil</span>
+
+<span class="n">account</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">owner</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">address</span>
+<span class="c1"># =&gt; NoMethodError: undefined method `address' for #&lt;Object:0x00559996b5bde8&gt;`</span>
+</code></pre></div></div>
+
+<p>Oops, the <code class="language-plaintext highlighter-rouge">try</code> method doesn’t check if the receiver responds to the given method. This is why
+it’s always better to use the stricter version of <code class="language-plaintext highlighter-rouge">try</code> - <code class="language-plaintext highlighter-rouge">try!</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span><span class="p">.</span><span class="nf">try!</span><span class="p">(</span><span class="ss">:owner</span><span class="p">).</span><span class="nf">try!</span><span class="p">(</span><span class="ss">:address</span><span class="p">)</span>
+<span class="c1"># =&gt; NoMethodError: undefined method `address' for #&lt;Object:0x00559996b5bde8&gt;`</span>
+</code></pre></div></div>
+
+<h2 id="bonus-23-features---arraydig-and-hashdig">Bonus 2.3 features - Array#dig and Hash#dig</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">#dig</code> method is probably the most useful feature in this version. No longer do we have to
+write abominations like the following:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">address</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="ss">:account</span><span class="p">].</span><span class="nf">try</span><span class="p">(</span><span class="ss">:[]</span><span class="p">,</span> <span class="ss">:owner</span><span class="p">).</span><span class="nf">try</span><span class="p">(</span><span class="ss">:[]</span><span class="p">,</span> <span class="ss">:address</span><span class="p">)</span>
+
+<span class="c1"># or</span>
+
+<span class="n">address</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="ss">:account</span><span class="p">].</span><span class="nf">fetch</span><span class="p">(</span><span class="ss">:owner</span><span class="p">)</span> <span class="p">{</span> <span class="p">{}</span> <span class="p">}.</span><span class="nf">fetch</span><span class="p">(</span><span class="ss">:address</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We can now simply use <code class="language-plaintext highlighter-rouge">Hash#dig</code> and accomplish the same thing:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">address</span> <span class="o">=</span> <span class="n">params</span><span class="p">.</span><span class="nf">dig</span><span class="p">(</span><span class="ss">:account</span><span class="p">,</span> <span class="ss">:owner</span><span class="p">,</span> <span class="ss">:address</span><span class="p">)</span>
+</code></pre></div></div>]]></content><author><name>Georgi Mitrev</name></author><category term="ruby" /><summary type="html"><![CDATA[The most interesting addition to Ruby 2.3.0 is the Safe Navigation Operator(&amp;.). A similar operator has been present in C# and Groovy for a long time with a slightly different syntax - ?.. So what does it do?]]></summary></entry><entry><title type="html">Benchmarking Ruby</title><link href="https://mitrev.net/ruby/2015/08/28/benchmarking-ruby/" rel="alternate" type="text/html" title="Benchmarking Ruby" /><published>2015-08-28T00:00:00+00:00</published><updated>2015-08-28T00:00:00+00:00</updated><id>https://mitrev.net/ruby/2015/08/28/benchmarking-ruby</id><content type="html" xml:base="https://mitrev.net/ruby/2015/08/28/benchmarking-ruby/"><![CDATA[<p>Benchmarking Ruby code is essential for improving the performance of applications. The Ruby
+Standard Library provides a <a href="http://ruby-doc.org/stdlib-2.5.0/libdoc/benchmark/rdoc/Benchmark.html">Benchmark module</a>
+that can be used to measure the running time of any Ruby code block.</p>
+
+<p>First, lets require it:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'benchmark'</span>
+<span class="c1"># =&gt; true</span>
+</code></pre></div></div>
+
+<h2 id="benchmarking-a-single-block-of-code">Benchmarking a single block of code</h2>
+
+<p>For benchmarking simple blocks of code, use the <code class="language-plaintext highlighter-rouge">#measure</code> method:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">puts</span> <span class="no">Benchmark</span><span class="p">.</span><span class="nf">measure</span> <span class="p">{</span> <span class="mi">10_000_000</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="no">Object</span><span class="p">.</span><span class="nf">new</span> <span class="p">}</span> <span class="p">}</span>
+<span class="c1">#        user     system      total        real</span>
+<span class="c1"># =&gt; 1.280000   0.000000   1.280000 (  1.283235)</span>
+</code></pre></div></div>
+
+<p>The result is in seconds, so instantiating 10 million objects takes a little more than a second.</p>
+
+<p>If we need to print a custom message, we can capture the result and process it:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">result</span> <span class="o">=</span> <span class="no">Benchmark</span><span class="p">.</span><span class="nf">realtime</span> <span class="p">{</span> <span class="mi">10_000_000</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="no">Object</span><span class="p">.</span><span class="nf">new</span> <span class="p">}</span> <span class="p">}</span>
+
+<span class="nb">puts</span> <span class="s2">"Creating ten million objects: </span><span class="si">#{</span><span class="n">realtime</span><span class="p">.</span><span class="nf">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">s"</span>
+<span class="c1"># =&gt; Creating ten million objects: 1.29s</span>
+</code></pre></div></div>
+
+<h2 id="comparing-several-blocks">Comparing several blocks</h2>
+
+<p>We often need to compare several approaches to a problem in order to find out the best one. Let’s
+say we want to compare the following methods for finding the n-th fibonacci number:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># DP version</span>
+<span class="k">def</span> <span class="nf">fib_dp</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+  <span class="p">(</span><span class="mi">2</span><span class="o">..</span><span class="n">n</span><span class="p">).</span><span class="nf">reduce</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="n">m</span> <span class="o">&lt;&lt;</span> <span class="n">m</span><span class="p">.</span><span class="nf">last</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="nf">reduce</span><span class="p">(:</span><span class="o">+</span><span class="p">)</span> <span class="p">}[</span><span class="n">n</span><span class="p">]</span>
+<span class="k">end</span>
+
+<span class="c1"># Recursive version</span>
+<span class="k">def</span> <span class="nf">fib_rec</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+  <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span>
+  <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span>
+
+  <span class="n">fib_rec</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib_rec</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The unoptimized recursive version is very slow and will choke on values larger than 40. We can use
+the <code class="language-plaintext highlighter-rouge">#bm</code> method to measure just how much slower it is:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Benchmark</span><span class="p">.</span><span class="nf">bm</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'dp:'</span><span class="p">)</span>        <span class="p">{</span> <span class="n">fib_dp</span><span class="p">(</span><span class="mi">35</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'recursive:'</span><span class="p">)</span> <span class="p">{</span> <span class="n">fib_rec</span><span class="p">(</span><span class="mi">35</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1">#                  user     system      total        real</span>
+<span class="c1"># dp:          0.000000   0.000000   0.000000 (  0.000035)</span>
+<span class="c1"># recursive:   1.680000   0.000000   1.680000 (  1.671631)</span>
+</code></pre></div></div>
+
+<p>The first argument to <code class="language-plaintext highlighter-rouge">#bm</code> defines the label width and larger values will shift the results
+further to the right. Anyway, we got what we wanted - the recursive function takes more than a
+second and a half and the DP version takes a negligible amount of time. In fact, it can calculate
+very large fibonacci numbers in very little time:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">puts</span> <span class="no">Benchmark</span><span class="p">.</span><span class="nf">measure</span> <span class="p">{</span> <span class="n">fib_dp</span><span class="p">(</span><span class="mi">100_000</span><span class="p">)</span> <span class="p">}</span>
+<span class="c1">#        user     system      total        real</span>
+<span class="c1"># =&gt; 0.350000   0.000000   0.350000 (  0.350249)</span>
+</code></pre></div></div>
+
+<p>There is another method in the Benchmark library called <code class="language-plaintext highlighter-rouge">#bmbm</code> which runs the tests twice - the
+first time to warm up the runtime environment and the second time to measure the results. You will
+want to use this method if you worry that the order of execution of the different code blocks will
+have an effect on their execution time.</p>
+
+<h2 id="using-benchmark-ips">Using benchmark-ips</h2>
+
+<p>The <a href="https://github.com/evanphx/benchmark-ips">benchmark-ips</a> gem provides even more features than
+the default Benchmark module. Install it and then require it in your program:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
+</code></pre></div></div>
+
+<p>Let’s use it to test our previous methods:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'dp: '</span><span class="p">)</span>        <span class="p">{</span> <span class="n">fib_dp</span><span class="p">(</span><span class="mi">35</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'recursive: '</span><span class="p">)</span> <span class="p">{</span> <span class="n">fib_rec</span><span class="p">(</span><span class="mi">35</span><span class="p">)</span> <span class="p">}</span>
+
+  <span class="n">x</span><span class="p">.</span><span class="nf">compare!</span>
+<span class="k">end</span>
+
+<span class="c1"># Calculating -------------------------------------</span>
+<span class="c1">#                 dp:      5.600k i/100ms</span>
+<span class="c1">#          recursive:      1.000  i/100ms</span>
+<span class="c1"># -------------------------------------------------</span>
+<span class="c1">#                 dp:      60.299k (± 2.0%) i/s -    302.400k</span>
+<span class="c1">#          recursive:       0.517  (± 0.0%) i/s -      3.000  in   5.800686s</span>
+<span class="c1">#</span>
+<span class="c1"># Comparison:</span>
+<span class="c1">#                 dp: :    60299.5 i/s</span>
+<span class="c1">#          recursive: :        0.5 i/s - 116590.15x slower</span>
+</code></pre></div></div>
+
+<p>The only difference is the <code class="language-plaintext highlighter-rouge">x.compare!</code> call at the end, but we get a lot more valuable information
+about the performance of the two methods - iterations per second, standard deviation and finally a
+comparison which shows that the unoptimized recursive version is more than 100 000 times slower
+than the DP version!</p>
+
+<p>There are a few more options available, like setting the time for the warmup and calculation phases
+or creating a custom suite.</p>
+
+<h2 id="conclusion-and-further-reading">Conclusion and further reading</h2>
+
+<p>If you ever wondered if <code class="language-plaintext highlighter-rouge">Enumerable#each</code> is faster than a <code class="language-plaintext highlighter-rouge">for</code> loop or if <code class="language-plaintext highlighter-rouge">[].map.flatten</code> is
+slower than <code class="language-plaintext highlighter-rouge">[].flat_map</code>, take a look at the
+<a href="https://github.com/JuanitoFatas/fast-ruby">fast-ruby</a> repo. It contains answers to those questions
+and to many others.</p>
+
+<p>The Benchmark module and benchmark-ips gem are really easy to use and provide great information
+about the performance of your code. They are an essential tool in every developers toolbelt.</p>]]></content><author><name>Georgi Mitrev</name></author><category term="ruby" /><summary type="html"><![CDATA[Benchmarking Ruby code is essential for improving the performance of applications. The Ruby Standard Library provides a Benchmark module that can be used to measure the running time of any Ruby code block.]]></summary></entry><entry><title type="html">The Null Object pattern</title><link href="https://mitrev.net/ruby/2015/06/07/the-null-object-pattern/" rel="alternate" type="text/html" title="The Null Object pattern" /><published>2015-06-07T00:00:00+00:00</published><updated>2015-06-07T00:00:00+00:00</updated><id>https://mitrev.net/ruby/2015/06/07/the-null-object-pattern</id><content type="html" xml:base="https://mitrev.net/ruby/2015/06/07/the-null-object-pattern/"><![CDATA[<p>Every Ruby programmer eventually encounters the dreaded <code class="language-plaintext highlighter-rouge">NoMethodError</code> exception.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">undefined</span> <span class="nb">method</span> <span class="sb">`first_name' for nil:NilClass
+</span></code></pre></div></div>
+
+<p>We learn to live with it and handle it in various nasty ways. Like using <code class="language-plaintext highlighter-rouge">try</code>:</p>
+
+<div class="language-slim highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">tr</span>
+  <span class="nt">td</span><span class="w"> </span><span class="p">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">human_attribute_name</span><span class="p">(</span><span class="ss">:vat_number</span><span class="p">)</span>
+  <span class="nt">td</span><span class="w"> </span><span class="p">=</span> <span class="vi">@client</span><span class="p">.</span><span class="nf">try</span><span class="p">(</span><span class="ss">:vat_number</span><span class="p">)</span>
+<span class="nt">tr</span>
+  <span class="nt">td</span><span class="w"> </span><span class="p">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">human_attribute_name</span><span class="p">(</span><span class="ss">:company_ownership_type_id</span><span class="p">)</span>
+  <span class="nt">td</span><span class="w"> </span><span class="p">=</span> <span class="vi">@client</span><span class="p">.</span><span class="nf">ctry</span><span class="p">(</span><span class="ss">:company_ownership_type</span><span class="p">,</span> <span class="ss">:name_bg</span><span class="p">)</span>
+<span class="nt">tr</span>
+  <span class="nt">td</span><span class="w"> </span><span class="p">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">human_attribute_name</span><span class="p">(</span><span class="ss">:company_branch_id</span><span class="p">)</span>
+  <span class="nt">td</span><span class="w"> </span><span class="p">=</span> <span class="vi">@client</span><span class="p">.</span><span class="nf">ctry</span><span class="p">(</span><span class="ss">:company_branch</span><span class="p">,</span> <span class="ss">:name_bg</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>This code is bad because our <code class="language-plaintext highlighter-rouge">@client</code> should never actually be <code class="language-plaintext highlighter-rouge">nil</code>. We can improve it by using the
+Null Object Pattern.</p>
+
+<h2 id="an-example">An example</h2>
+
+<p>Imagine we have an application and have to print a greeting to the current user, something like
+“Welcome, George”. The first thing we try may be:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Welcome</span><span class="p">,</span> <span class="o">&lt;</span><span class="sx">%= current_user.name %&gt;
+</span></code></pre></div></div>
+
+<p>But then we log out and are greeted with an old friend:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">NoMethodError</span><span class="p">:</span> <span class="n">undefined</span> <span class="nb">method</span> <span class="sb">`name' for nil:NilClass
+</span></code></pre></div></div>
+
+<p>We quickly fix our code by adding a <code class="language-plaintext highlighter-rouge">nil</code> check and also decide we want to greet logged-out people
+too:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Welcome</span><span class="p">,</span> <span class="o">&lt;</span><span class="sx">%= current_user.nil? ? 'Guest' : current_user.name %&gt;
+</span></code></pre></div></div>
+
+<p>This works as we originally intended and is good enough for production. Or is it? We start using
+the same pattern in different places, our collegues also pick it up and a few months later we find
+ourselves in with filthy mess that is really hard to refactor.</p>
+
+<p>Our next problem comes with a change in the requirements - guest users are not to be greeted as
+“Guest”, but as “Stranger”, because our boss thinks it’s funnier. We start working on our task and
+find that there are 78 occurances of the string “Guess” in our view code and we need to change each
+one separately because we cannot mass replace such a common word as ‘Guest’. We curse the gods and
+get on with it, because this is life and life sucks.</p>
+
+<p>Could this have been avoided? Yes, and the solution is really simple.</p>
+
+<h2 id="the-pattern">The pattern</h2>
+
+<p>What we need is way to make <code class="language-plaintext highlighter-rouge">current_user</code> respond to the <code class="language-plaintext highlighter-rouge">name</code> method even if no user is
+currently logged in. We start by introducing a new class:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">NullUser</span>
+  <span class="k">def</span> <span class="nf">name</span>
+    <span class="s1">'Guest'</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">logged_in?</span>
+    <span class="kp">false</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">NullUser</code> class should conform to the same public API as the <code class="language-plaintext highlighter-rouge">User</code> class, which requires
+maintenance, but everything comes at a cost.</p>
+
+<p>Next, we change our <code class="language-plaintext highlighter-rouge">current_user</code> method to return a new instance of <code class="language-plaintext highlighter-rouge">NullUser</code> when no user is
+logged in:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">current_user</span>
+  <span class="n">current_user_session</span> <span class="o">||</span> <span class="no">NullUser</span><span class="p">.</span><span class="nf">new</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now when our new requirements arrive, we only need to update the <code class="language-plaintext highlighter-rouge">name</code> method of the <code class="language-plaintext highlighter-rouge">NullUser</code>
+class and need not to worry about breaking anything else. If we dislike the name of the
+class, we may also use <code class="language-plaintext highlighter-rouge">Guest</code> or <code class="language-plaintext highlighter-rouge">GuestUser</code>, it doesn’t matter.</p>
+
+<h2 id="drawbacks">Drawbacks</h2>
+
+<p>The Null Object is not a silver bullet and not something you want to use for all your classes. It
+should not be used to avoid all <code class="language-plaintext highlighter-rouge">nil</code> errors but as a way to provide default behaviour when you get
+an unexpected <code class="language-plaintext highlighter-rouge">nil</code>. Sometimes <code class="language-plaintext highlighter-rouge">nil</code> is just <code class="language-plaintext highlighter-rouge">nil</code> and should be handled as such. You should also
+have an extensive test suite that ensures that nowhere a <code class="language-plaintext highlighter-rouge">nil</code> may be assigned instead of your Null
+Object instance, because that will break wreak havoc on your happy little world.</p>
+
+<h2 id="last-words">Last words</h2>
+
+<p>The pattern really shines in the cases it’s is suited for, such as the NullUser or representing the
+last element of a list/tree. Apply it with care and it may improve your life a little.</p>]]></content><author><name>Georgi Mitrev</name></author><category term="ruby" /><summary type="html"><![CDATA[Every Ruby programmer eventually encounters the dreaded NoMethodError exception.]]></summary></entry></feed>
