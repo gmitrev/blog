@@ -20,7 +20,7 @@ header a:hover {
   background-size: 100% 2px;
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4, h5 {
   @apply font-heading
 }
 
@@ -38,6 +38,10 @@ h3 {
 
 h4 {
   @apply text-lg mb-2 mt-4;
+}
+
+h5 {
+  @apply text-base font-bold text-stone-600 mb-2 mt-4;
 }
 
 p {
@@ -91,6 +95,43 @@ code.language-plaintext {
 
   .library p {
     @apply text-base
+  }
+
+  article img {
+    @apply rounded shadow-sm transition-shadow hover:shadow-lg;
+  }
+
+  article p:has(> img) {
+    @apply mb-2;
+  }
+
+  .caption {
+    @apply text-sm leading-6 text-stone-500 mb-6;
+  }
+
+  article table {
+    @apply block max-w-full overflow-x-auto border-collapse text-sm mt-2 mb-6;
+  }
+
+  article th {
+    @apply font-heading font-normal text-left align-bottom text-stone-700 border-b-2 border-stone-300 px-3 py-2;
+  }
+
+  article td {
+    @apply whitespace-nowrap tabular-nums text-stone-700 border-b border-stone-200 px-3 py-1.5;
+  }
+
+  article th:first-child,
+  article td:first-child {
+    @apply pl-0;
+  }
+
+  article tbody tr:hover {
+    @apply bg-amber-100/50;
+  }
+
+  .lightbox-trigger {
+    @apply cursor-pointer;
   }
 
   .lightbox {
