@@ -10,12 +10,14 @@
 {%- assign large_card = false -%}
 {%- if meta_image contains "/images/og/" -%}{%- assign large_card = true -%}{%- endif -%}
 <meta name="description" content="{{ meta_description | escape }}">
+<link rel="canonical" href="{{ page.url | absolute_url }}">
 
 <meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}">
 <meta property="og:title" content="{{ meta_title | escape }}">
 <meta property="og:description" content="{{ meta_description | escape }}">
 <meta property="og:url" content="{{ page.url | absolute_url }}">
 <meta property="og:site_name" content="{{ site.title | escape }}">
+<meta property="og:locale" content="{% if page.lang == "bg" %}bg_BG{% else %}en_US{% endif %}">
 {%- if meta_image %}
 <meta property="og:image" content="{{ meta_image | absolute_url }}">
 <meta property="og:image:alt" content="{{ meta_title | escape }}">
@@ -31,4 +33,25 @@
 <meta name="twitter:description" content="{{ meta_description | escape }}">
 {%- if meta_image %}
 <meta name="twitter:image" content="{{ meta_image | absolute_url }}">
+{%- endif %}
+{%- if page.layout == "post" %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ meta_title | jsonify }},
+  "description": {{ meta_description | jsonify }},
+  "datePublished": {{ page.date | date_to_xmlschema | jsonify }},
+  "dateModified": {{ page.last_modified_at | default: page.date | date_to_xmlschema | jsonify }},
+  "inLanguage": {{ page.lang | default: "en" | jsonify }},
+  "url": {{ page.url | absolute_url | jsonify }},
+  "mainEntityOfPage": {{ page.url | absolute_url | jsonify }},
+  "image": {{ meta_image | absolute_url | jsonify }},
+  "author": {
+    "@type": "Person",
+    "name": {{ site.author | jsonify }},
+    "url": {{ site.url | jsonify }}
+  }
+}
+</script>
 {%- endif %}
