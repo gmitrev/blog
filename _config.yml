@@ -2,7 +2,7 @@ title:       Georgi Mitrev
 email:       gvmitrev@gmail.com
 author:      Georgi Mitrev
 description: "Personal blog of Georgi Mitrev"
-image:       "/assets/images/avatar.jpg"
+image:       "/assets/images/og/site.png"
 baseurl:     ""
 url:         "https://mitrev.net"
 date_format: "%b %-d, %Y"

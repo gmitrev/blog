@@ -18,7 +18,8 @@ class OgCard
   attr_reader :slug, :title, :description, :category, :date, :lang
 
   def self.all
-    Dir[File.join(ROOT, "_posts", "*.{md,markdown}")].sort.map { |path| new(path) }.select(&:published?)
+    posts = Dir[File.join(ROOT, "_posts", "*.{md,markdown}")].sort.map { |path| new(path) }.select(&:published?)
+    [SiteCard.new] + posts
   end
 
   def initialize(path)
@@ -43,7 +44,7 @@ class OgCard
     File.write(page, ERB.new(File.read(template)).result(binding))
 
     target = File.join(OUT, "#{slug}.png")
-    system(browser, "--headless", "--disable-gpu", "--hide-scrollbars", "--force-device-scale-factor=1",
+    system(browser, "--headless", "--disable-gpu", "--hide-scrollbars", "--force-device-scale-factor=2",
            "--window-size=1200,630", "--virtual-time-budget=3000", "--screenshot=#{target}", "file://#{page}",
            out: File::NULL, err: File::NULL) || abort("failed to render #{slug}")
     target
@@ -53,6 +54,13 @@ class OgCard
 
   def browser
     BROWSERS.find { |path| File.executable?(path) } || abort("install Chrome or Chromium")
+  end
+end
+
+class SiteCard < OgCard
+  def initialize
+    @slug = "site"
+    @lang = "en"
   end
 end
 

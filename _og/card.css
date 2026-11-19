@@ -38,3 +38,5 @@ h1 { margin: 0; font-weight: 700; line-height: 1.08; }
 .bar { height: 36px; border-radius: 0 6px 6px 0; background: #A8A29E; }
 .bar.mine { background: #BE123C; }
 .bar-value { font-size: 30px; font-weight: 700; }
+
+.avatar { width: 300px; height: 300px; border-radius: 9999px; object-fit: cover; }
