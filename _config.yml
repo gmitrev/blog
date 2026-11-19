@@ -9,7 +9,9 @@ date_format: "%b %-d, %Y"
 permalink:    pretty
 
 plugins:
+  - jekyll-feed
   - jekyll-postcss
+  - jekyll-sitemap
   - jekyll-target-blank
 
 postcss:
@@ -22,3 +24,11 @@ kramdown:
 
 exclude:
   - Gemfile
+  - README.MD
+  - doc
+  - mise.toml
+  - package.json
+  - postcss.config.js
+  - tailwind.config.js
+  - tmp
+  - yarn.lock
